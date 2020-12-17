@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0">
+<meta name="description" content="P2P Video Calling">
+<meta name="author" content="Unnamed">
+<title>FybrrChat - Fully secure and decentralized video calling service</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/animation.min.css" rel="stylesheet">
+<!-- <link href="/font-awesome.min.css" rel="stylesheet"> -->
+<link href="css/style.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet"> 
+<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+<link rel="manifest" href="favicon/site.html">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+</head>
+<body class="dark-horizontal theme-white" data-spy="scroll" data-target=".navbar-nav">
+<div class="animsition">
+<div class="wrapper">
+<header id="header" class="header header-absolute a-affix">
+<div class="container-fluid clearfix">
+<div class="brand">
+<a href="#">
+<div class="brand-name"><i class="fa fa-video-camera" aria-hidden="true"></i></div>
+<div class="brand-text" style="font-family: 'Righteous', cursive !important;">fybrrChat<br /><small> Video Calling</small></div>
+</a>
+</div>
+</header>
+<div id="content">
+<div class="promo text-white" style="background-image: url(img/bg-body.png);">
+<div class="promo-bg" style="background-image: url(img/bg-promo.png);"></div>
+<div class="container">
+<div class="row">
+<div class="col-md-5">
+<h1 class="promo-title font-libre" style="font-family: 'Righteous', cursive !important;">fybrrChat</h1>
+<a href="./room.html" class="button4 meetbutton">Start New Meeting</a><br><span style="margin: 25px 10px 15px 80px;display:inline-block;">&nbsp&nbsp&nbsp&nbsp OR &nbsp&nbsp</span><br>
+<input type="text" class="meetinput" id="hash" placeholder="Enter Meet Code"></input><button type="submit" onclick="meetHash(document.getElementById('hash').value);">Join</button>
+  <script type="text/javascript">
+    function meetHash(meetHashCode)
+    {
+      //location.hash = meetHashCode;
+      window.location.href = "./room.html\#"+meetHashCode;
+    }
+  </script>
+<div class="promo-title-sub" style="margin: 65px 0px 0px 0px;font-family: 'Righteous', cursive !important;">Secure & Decentralized & FREE</div>
+<div class="promo-descr">ENJOY HIGH QUALITY VIDEO CALLS JUST ON <strong>WEB BROWSER</strong>.<br /> NO PLUGINS OR INSTALLS REQUIRED.<br>WORKS BOTH ON MOBILE AND PC <small>(upto 8 members group call) (Chrome/mozilla/edge required)</small></div>
+
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="demos">
+<div class="container">
+<div class="row">
+<div class="col-lg-9">
+<h2 class="section-title font-libre">SEE THE WHOLE PICTURE</h2>
+<div class="section-descr"><strong>Simple, secure, free and best quality video streaming.</strong><br /> fybrrChat works on a decentralized peer-to-peer mesh which leaves behind the slow bulky servers and also ensures total privacy. The platform is engineered to provide low latency and maximum video quality. </div>
+</div>
+</div>
+</div>
+<div class="container-fluid">
+<div class="demo-list row row-60">
+<div class="col-md-6 col-lg-4">
+<a href="" class="demo-item demo01 text-white">
+<div class="demo-item-bg" style="background-color: #201053;"></div>
+<!-- <img src="img/demo01-1.jpg" alt="" class="demo-item-photo-01" />
+<img src="img/demo01-2.jpg" alt="" class="demo-item-photo-02" />-->
+<div class="demo-item-num">01</div>
+<div class="demo-item-detail">
+<div class="demo-item-title">Secure</div>
+<div class="demo-item-descr">End-to-end encryption</div>
+</div>
+</a>
+</div>
+<div class="col-md-6 col-lg-4col-md-6 col-lg-4">
+<a href="" class="demo-item demo02 text-white">
+<div class="demo-item-bg" style="background-color: #252628"></div>
+<!-- <img src="img/demo02.jpg" alt="" class="demo-item-photo" /> -->
+<div class="demo-item-num">02</div>
+<div class="demo-item-detail">
+<div class="demo-item-title">Decentralized</div>
+<div class="demo-item-descr">Direct Peer-to-Peer connection</div>
+</div>
+</a>
+</div>
+<div class="col-md-6 col-lg-4">
+<a href="" class="demo-item demo07 text-white">
+<div class="demo-item-bg" style="background-color: #174041;"></div>
+<!-- <img src="img/demo07.jpg" alt="" class="demo-item-photo" /> -->
+<div class="demo-item-num">03</div>
+<div class="demo-item-detail">
+<div class="demo-item-title">Free</div>
+<div class="demo-item-descr">No Server Cost</div>
+</div>
+</a>
+</div>
+<div class="col-md-6 col-lg-4">
+<a href="" class="demo-item demo04 text-white">
+<div class="demo-item-bg" style="background-color: #174041;"></div>
+<div class="mask"></div>
+<!-- <img src="img/demo04-1.jpg" alt="" class="demo-item-photo-01" />
+<img src="img/demo04-2.jpg" alt="" class="demo-item-photo-02" /> -->
+<div class="demo-item-num">04</div>
+<div class="demo-item-detail">
+<div class="demo-item-title">High Quality</div>
+<div class="demo-item-descr">Best-in-class compression algorithm</div>
+</div>
+</a>
+</div>
+<div class="col-md-6 col-lg-4">
+<a href="" class="demo-item demo06">
+<div class="demo-item-bg" style="background-color: #f3f7f7"></div>
+<!-- <img src="img/demo06.jpg" alt="" class="demo-item-photo" /> -->
+<div class="demo-item-num">05</div>
+<div class="demo-item-detail">
+<div class="demo-item-title">No Download Required</div>
+<div class="demo-item-descr">Use directly in web browser</div>
+</div>
+</a>
+</div>
+<div class="col-md-6 col-lg-4">
+<a href="" class="demo-item demo05 text-white">
+<div class="demo-item-bg" style="background-color: #f3f7f7"></div>
+<div class="mask"></div>
+<!-- <img src="img/demo05-1.jpg" alt="" class="demo-item-photo-01" />
+<img src="img/demo05-2.jpg" alt="" class="demo-item-photo-02" /> -->
+<div class="demo-item-num">06</div>
+<div class="demo-item-detail">
+<div class="demo-item-title">No Server</div>
+<div class="demo-item-descr">No data tracking</div>
+</div>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer text-white">
+<div class="container">
+ <div class="row footer-content">
+<div class="col-lg-6">
+<div class="footer-title font-libre">Make your calls secure unlike ever before.</div>
+</div>
+<div class="col-lg-6">
+
+</div>
+</div>
+<div class="copyright">&copy;&nbsp; 2020 fybrrChat.<br /> all rights reserved</div>
+</div>
+</div>
+</div>
+<script src="../../../../code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+<script src="js/smoothscroll.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/animsition.min.js"></script>
+<script src="js/TweenMax.min.js"></script>
+<script src="js/ScrollMagic.min.js"></script>
+<script src="js/animation.gsap.min.js"></script>
+<script src="js/script.js"></script>
+<script>
+      $(document).ready(function() {
+        // init controller
+        var controller = new ScrollMagic.Controller();
+
+        // build scenes
+        new ScrollMagic.Scene({triggerElement: '.promo', triggerHook: 0, duration: '100%'})
+              .setTween('.promo-bg', {backgroundPosition: '20% 100%', ease: Linear.easeNone})
+              .addTo(controller);
+
+      });
+    </script>
+</body>
+
+</html>

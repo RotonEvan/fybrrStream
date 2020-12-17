@@ -1,0 +1,224 @@
+:root {
+    --rowHeight: 98vh;
+    --colWidth: 98vw;
+    --rowHeightMob: 98vh;
+    --colWidthMob: 98vw;
+}
+
+body {
+    background: #ECEFF1;
+    margin:0px;
+}
+
+.videos {
+
+    display: grid;
+    grid-gap: 1px;
+    grid-auto-flow: row;
+
+    grid-template-columns: repeat(auto-fit, minmax(var(--colWidth), 1fr)) ;
+}
+
+#localVideo
+{
+    transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
+}
+/* .videoContainer {
+    position: relative;
+    overflow: hidden;
+    min-height: var(--rowHeight);
+    min-width: var(--colWidth);
+} */
+
+@media not screen and (max-width: 600px) {
+  html{
+    --rowHeightMob: unset !important;
+    --colWidthMob: unset !important;
+  }
+  .videoContainer {
+      position: relative;
+      overflow: hidden;
+      height: var(--rowHeight);
+      width: var(--colWidth);
+  }
+}
+@media only screen and (max-width: 600px) {
+  html{
+    --rowHeight: unset !important;
+    --colWidth: unset !important;
+  }
+  .videoContainer{
+    position: relative;
+    overflow: hidden;
+    height: var(--rowHeightMob);
+    width: var(--colWidthMob);
+  }
+}
+
+.videoContainer video {
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.videoLabel {
+    color: white;
+    font: bold 18px Arial, Sans-Serif;
+    line-height: 18px;
+    height: 18px;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 4px;
+}
+
+.audioMute {
+    color: white;
+    font: bold 20px Arial, Sans-Serif;
+    line-height: 2.5rem;
+    height: 2.8rem;
+    width: 2.8rem;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: #e43538;
+    text-align: center;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    padding: 4px;
+}
+
+.audioUnmute {
+    color: white;
+    font: bold 18px Arial, Sans-Serif;
+    line-height: 18px;
+    height: 18px;
+    display: none;
+    background: #e43538;
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 4px;
+}
+
+/* ui for buttons to be added */
+
+.buttons {
+    position: fixed;
+    width: 100%;
+    z-index: 9;
+    left: 0;
+    right: 0;
+    /* top: 80%; */
+    bottom: 3%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttons a {
+    position: relative;
+    margin: 0 1.3rem;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 24px;
+    color: #FFF;
+    width: 4rem;
+    height: 4rem;
+    line-height: 4rem;
+    border-radius: 50%;
+    border-width: 10px;
+    border-color: #FFF;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    transition: .4s;
+    bottom: 0;
+}
+@media (min-width: 1024px) {
+    .buttons a:hover {
+        background: #e43538;
+    }
+}
+
+.off {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.on {
+    background: #e43538;
+}
+
+@media (min-width: 1025px) {
+    .flip {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .buttons a {
+        width: 3rem !important;
+        height: 3rem !important;
+        line-height: 3rem !important;
+    }
+}
+
+
+.navbar{
+  height:7vh;
+  background:white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 10000;
+  display: block;
+}
+.navbar a{
+
+  color: #303030;
+  text-align: center;
+
+  text-decoration: none;
+  font-size: 20px;
+}
+.navbar-title{
+  float: left;
+  font-family: righteous;
+  display: block;
+  padding: 11px 16px;
+}
+.navbar-right{
+  float: right;
+  font-family:  butler,sans-serif !important;
+  /* display: block; */
+}
+.fa-sign-out{
+  color: red;
+  margin: 8px 10px 10px 10px;
+  padding: 1px 12px 1px 1px !important;
+  font-size: 24px !important;
+}
+.copy-button{
+  background-color:#f2f2f2;
+  border-radius: 30px 30px 30px 30px;
+  padding: 8px 10px 8px 10px;
+  border: none;
+  display:inline-block;
+  margin: 10px 10px 10px 10px;
+  -webkit-appearance: none;
+  font-size: 14px !important;
+  cursor: pointer;
+}

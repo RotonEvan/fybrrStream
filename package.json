@@ -1,0 +1,26 @@
+{
+  "name": "fybrrChat",
+  "version": "1.0.0",
+  "description": "A p2p video calling/conferencing platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RotonEvan/p2p-vid-chat.git"
+  },
+  "keywords": [
+    "webrtc"
+  ],
+  "author": "Roton and Saksham",
+  "license": "MIT",
+  "homepage": "https://p2p-vid-chat.herokuapp.com",
+  "dependencies": {
+    "bufferutil": "^4.0.1",
+    "express": "^4.17.1",
+    "utf-8-validate": "^5.0.2",
+    "ws": "^3.3.3"
+  }
+}
