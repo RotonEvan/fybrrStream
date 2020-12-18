@@ -38,14 +38,6 @@ function start() {
 
   // specify no audio for user media
   constraints = {
-    // video: {
-    //   width: {max: 320},
-    //   height: {max: 240},
-    //   frameRate: {max: 20},
-    //   // facingMode: frontCam ? 'user' : 'environment',
-    //   // facingMode: 'user',
-    //   // facingMode: 'environment',
-    // },
     video: {
       width: {ideal: 320},
       height: {ideal: 240},
