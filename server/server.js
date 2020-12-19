@@ -63,6 +63,7 @@ wss.on("connection", function (ws) {
         // room already present with source node in the room
         if (currRoom.isNodeLimitNotReached()) {
           var currNode = currRoom.addNode(peer_id, score, limit, ws);
+          sendSourceStream(peer_id, currRoom);
           currRoom.linkNodes(currNode);
         }
         else {
@@ -70,7 +71,18 @@ wss.on("connection", function (ws) {
           var currNode = currRoom.addNode(peer_id, score, limit, ws);
 
           // check if node limit is more than those directly connected to source
-          
+          var [minNodeID, minNodeLimit] = currRoom.findMin();
+
+          if (limit > minNodeLimit) {
+            // replace
+
+            replaceSourceStream(peer_id, minNodeID, currRoom);
+            linkNodes(minNodeID, peer_id);
+          }
+          else {
+            // send best peers list
+            sendMessage('server', peer_id, 'BESTPEERLIST', JSON.stringify({'list' : currRoom.getBestNodes()}));
+          }
         }
       }
       else {
@@ -83,3 +95,18 @@ wss.on("connection", function (ws) {
 
   });
 });
+
+function sendSourceStream(peer, room) {
+  var src = room.getSourceID();
+  sendMessage('server', src, 'SEND', JSON.stringify({'peer' : peer}), room);
+}
+
+function replaceSourceStream(newPeer, oldPeer, room) {
+  var src = room.getSourceID();
+  sendMessage('server', src, 'REPLACE', JSON.stringify({'newPeer' : newPeer, 'oldPeer' : oldPeer}), room);
+  sendMessage('server', newPeer, 'SEND', JSON.stringify({'peer' : oldPeer}), room);
+}
+
+function sendMessage (from, to, context, data, room) {
+  room.getWebsocket(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
+}

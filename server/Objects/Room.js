@@ -12,8 +12,16 @@ module.exports = class Room {
         return this.room_id;
     }
 
+    getSourceID() {
+        return this.source_id;
+    }
+
     getSize () {
         return this.size;
+    }
+
+    getWS(node_id) {
+        return this.node_data[node_id].getWebsocket();
     }
     
     addNode (id, score, limit, websocket) {
@@ -21,6 +29,11 @@ module.exports = class Room {
         this.size++;
 
         return this.node_data[id];
+    }
+
+    findMin () {
+        var minNode = this.node_data[this.source_id].minLimitChild();
+        return [minNode.getID(), minNode.getLimit()];
     }
 
     linkNodes(child, parent = this.source_id) {
