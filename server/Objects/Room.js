@@ -1,10 +1,11 @@
 const Node = require("./Node");
 
 module.exports = class Room {
-    constructor (room_id) {
+    constructor (room_id, source_id) {
         this.room_id = room_id;
         this.node_data = {};
         this.size = 1;
+        this.source_id = source_id;
     }
 
     getRoomID () {
@@ -18,6 +19,18 @@ module.exports = class Room {
     addNode (id, score, limit, websocket) {
         this.node_data[id] = new Node(id, score, limit, websocket);
         this.size++;
+
+        return this.node_data[id];
+    }
+
+    linkNodes(child, parent = this.source_id) {
+        //link nodes
+        this.node_data[parent].appendChild(this.node_data[child]);
+        this.node_data[child].setParent(this.node_data[parent]);
+    }
+
+    isNodeLimitNotReached(nodeID = this.source_id) {
+        return (this.node_data[nodeID].getSlots() > 0);
     }
 
     getBestNodes (size = this.getSize()) {

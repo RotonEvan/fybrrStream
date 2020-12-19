@@ -1,3 +1,5 @@
+const Room = require('./Objects/Room')
+
 const HTTPS_PORT = process.env.PORT || 8443; //default port for https is 443
 const HTTP_PORT = 8001; //default port for http is 80
 
@@ -32,3 +34,52 @@ const wss = new WebSocket.Server({server: httpsServer});
 // server side logic begins
 
 var rooms = {} // Room Object Array
+
+wss.on("connection", function (ws) {
+  //ws - websocket of one peer
+
+  ws.on('message', function(message) {
+    console.log(message);
+    var signal = JSON.parse(message);
+    
+    // message syntax : 
+    // 'from' : peerID/server; 'to' : peerID/server; 'context' : contextType; 'data' : content;
+
+    var peer_id = signal.from;
+
+    //context - new peer joins
+
+    if (signal.context == 'JOIN') {
+      var data = JSON.parse(signal.data);
+      console.log(data);
+
+      // possible JSON data
+      // 'roomID' : abc123;
+
+      var room = data.roomID;
+      var score = data.score;
+      var limit = data.limit;
+      if (currRoom = rooms[room]) {
+        // room already present with source node in the room
+        if (currRoom.isNodeLimitNotReached()) {
+          var currNode = currRoom.addNode(peer_id, score, limit, ws);
+          currRoom.linkNodes(currNode);
+        }
+        else {
+          // source limit reached; peer joining protocol begins
+          var currNode = currRoom.addNode(peer_id, score, limit, ws);
+
+          // check if node limit is more than those directly connected to source
+          
+        }
+      }
+      else {
+        // this node is source node; room needs to be created
+        var newRoom = new Room(room, peer_id);
+        rooms[room] = newRoom;
+        newRoom.addNode(peer_id, score, limit, ws);
+      }
+    }
+
+  });
+});
