@@ -73,5 +73,11 @@ module.exports = class Room {
         return best_nodes;
     }
     
+    getParentID(node){
+        return this.node_data[node].getParent();
+    }
 
+    getBestChild(node){
+        return this.node_data[node].maxScoreChild()
+    }
 }

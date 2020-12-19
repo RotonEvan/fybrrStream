@@ -63,6 +63,9 @@ module.exports = class Node {
     }
 
     maxScoreChild () {
+        if (this.adj_list.length == 0){
+            return -1;
+        }
         var maximum = this.adj_list[0];
         var max_score = maximum.getScore();
         

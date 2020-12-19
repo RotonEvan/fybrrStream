@@ -92,6 +92,22 @@ wss.on("connection", function (ws) {
         newRoom.addNode(peer_id, score, limit, ws);
       }
     }
+    else if(signal.context == 'LEAVE'){
+
+      var data = JSON.parse(signal.data);
+      var room = data.roomID;
+
+      var parent_id = rooms[room].getParentID(peer_id);
+      var best_child_id = rooms[room].getBestChild(peer_id);
+      
+      if (best_child_id != -1){
+        replaceParentStream(parent_id, peer_id, best_child_id);
+      }
+      else if (parent_id == rooms[room].getSourceID() ){
+          best_child_id = rooms[room].findNextBestNode();
+          sendSourceStream(best_child_id, rooms[room]);
+      }
+    }
 
   });
 });
@@ -109,4 +125,8 @@ function replaceSourceStream(newPeer, oldPeer, room) {
 
 function sendMessage (from, to, context, data, room) {
   room.getWebsocket(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
+}
+
+function replaceParentStream(id, newPeer, oldPeer, room){
+  sendMessage('server', id, 'REPLACE', JSON.stringify({'newPeer' : newPeer, 'oldPeer' : oldPeer}), room);
 }
