@@ -72,9 +72,23 @@ module.exports = class Room {
 
         return best_nodes;
     }
+
+    findNextBestNode () {
+        var max = -1;
+        var maxNode = -1;
+        this.node_data.forEach(i => {
+            if (i.getParent().getID() == this.source_id)  continue;
+            if (max < i.getScore()) {
+                max = i.getScore();
+                maxNode = i.getID();
+            }
+        });
+
+        return maxNode;
+    }
     
     getParentID(node){
-        return this.node_data[node].getParent();
+        return this.node_data[node].getParent().getID();
     }
 
     getBestChild(node){

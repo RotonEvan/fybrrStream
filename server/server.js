@@ -92,25 +92,31 @@ wss.on("connection", function (ws) {
         newRoom.addNode(peer_id, score, limit, ws);
       }
     }
-    else if(signal.context == 'LEAVE'){
+    else if(signal.context == 'LEAVE') {
 
       var data = JSON.parse(signal.data);
       var room = data.roomID;
 
-      var parent_id = rooms[room].getParentID(peer_id);
-      var best_child_id = rooms[room].getBestChild(peer_id);
-      
-      if (best_child_id != -1){
-        replaceParentStream(parent_id, peer_id, best_child_id);
-      }
-      else if (parent_id == rooms[room].getSourceID() ){
-          best_child_id = rooms[room].findNextBestNode();
-          sendSourceStream(best_child_id, rooms[room]);
-      }
+      peerLeaving(peer_id, rooms[room]);
     }
 
   });
 });
+
+function peerLeaving (peer_id, room) {
+  var parent_id = room.getParentID(peer_id);
+      var best_child_id = room.getBestChild(peer_id);
+      
+      if (best_child_id != -1){
+        replaceParentStream(parent_id, peer_id, best_child_id);
+      }
+      else if (parent_id == room.getSourceID()){
+          best_child_id = room.findNextBestNode();
+          if (best_child_id != -1) {
+            sendSourceStream(best_child_id, room);
+          }
+      }
+}
 
 function sendSourceStream(peer, room) {
   var src = room.getSourceID();
