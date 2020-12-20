@@ -42,6 +42,22 @@ module.exports = class Room {
         this.node_data[child].setParent(this.node_data[parent]);
     }
 
+    delinkNodes(child, parent = this.source_id) {
+        // removing parent from child
+        this.node_data[child].setParent(null);
+        // removing child from parent
+        this.node_data[parent].removeChild(this.node_data[child]);        
+    }
+
+    removeNode(node) {
+        this.delinkNodes(node, this.getParentID(node));
+        this.node_data[node].getAdjList().forEach(i => {
+            i.setParent(null);
+        });
+        this.node_data[node].emptyAdjList();
+        delete this.node_data[node];
+    }
+
     isNodeLimitNotReached(nodeID = this.source_id) {
         return (this.node_data[nodeID].getSlots() > 0);
     }

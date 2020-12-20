@@ -38,7 +38,7 @@ var rooms = {} // Room Object Array
 wss.on("connection", function (ws) {
   //ws - websocket of one peer
 
-  ws.on('message', function(message) {
+  ws.on('message', async function(message) {
     console.log(message);
     var signal = JSON.parse(message);
     
@@ -49,7 +49,7 @@ wss.on("connection", function (ws) {
 
     //context - new peer joins
 
-    if (signal.context == 'JOIN') {
+    if (signal.context == 'JOIN' && signal.to == 'server') {
       var data = JSON.parse(signal.data);
       console.log(data);
 
@@ -62,8 +62,10 @@ wss.on("connection", function (ws) {
       if (currRoom = rooms[room]) {
         // room already present with source node in the room
         if (currRoom.isNodeLimitNotReached()) {
+          // if source limit is not reached
+          sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
           var currNode = currRoom.addNode(peer_id, score, limit, ws);
-          sendSourceStream(peer_id, currRoom);
+          // sendSourceStream(peer_id, currRoom);
           currRoom.linkNodes(currNode);
         }
         else {
@@ -75,13 +77,20 @@ wss.on("connection", function (ws) {
 
           if (limit > minNodeLimit) {
             // replace
-
-            replaceSourceStream(peer_id, minNodeID, currRoom);
-            linkNodes(minNodeID, peer_id);
+            sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
+            sendMessage('server', minNodeID, 'PARENT', JSON.stringify({'peer' : peer_id}));
+            // replaceSourceStream(peer_id, minNodeID, currRoom);
+            currRoom.delinkNodes(minNodeID);
+            currRoom.linkNodes(minNodeID, peer_id);
           }
           else {
             // send best peers list
-            sendMessage('server', peer_id, 'BESTPEERLIST', JSON.stringify({'list' : currRoom.getBestNodes()}));
+
+            var bestpeer = await currRoom.getBestNodes()[0].id.then(() => {
+              sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}));
+              currRoom.linkNodes(peer_id, bestpeer);
+            });
+
           }
         }
       }
@@ -90,18 +99,33 @@ wss.on("connection", function (ws) {
         var newRoom = new Room(room, peer_id);
         rooms[room] = newRoom;
         newRoom.addNode(peer_id, score, limit, ws);
+
+        // inform node that it is source node
+        sendMessage('server', peer_id, 'SOURCE', JSON.stringify({'room' : room}), room);
       }
     }
-    else if(signal.context == 'LEAVE') {
+    else if(signal.context == 'LEAVE' && signal.to == 'server') {
 
       var data = JSON.parse(signal.data);
       var room = data.roomID;
 
       peerLeaving(peer_id, rooms[room]);
     }
+    else if(signal.to != 'server') {
+      // message to be forwarded to a node
+      receiver = signal.to;
+      var data = JSON.parse(signal.data);
+      console.log(data);
+
+      var room = data.roomID;
+
+      room.getWebsocket(receiver).send(JSON.stringify(signal));
+    }
 
   });
 });
+
+
 
 function peerLeaving (peer_id, room) {
   var parent_id = room.getParentID(peer_id);

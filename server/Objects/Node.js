@@ -45,8 +45,17 @@ module.exports = class Node {
         --this.slots;
     }
 
+    increaseSlots () {
+        ++this.slots;
+    }
+
     appendChild (node) {
         this.adj_list.push(node);
+        node.decreaseSlots();
+    }
+
+    removeChild(node) {
+        this.adj_list.splice(this.adj_list.indexOf(node), 1);
     }
 
     minLimitChild () {
@@ -80,5 +89,9 @@ module.exports = class Node {
 
     setParent (node) {
         this.parent = node;
+    }
+
+    emptyAdjlist () {
+        this.adj_list = [];
     }
 }
