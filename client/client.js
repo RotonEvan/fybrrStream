@@ -177,29 +177,32 @@ function createdDescription(description, peer) {
 }
   
 function gotRemoteStream(event, peer) {
-    var videle = document.getElementById('remoteVideo_'+peer);
-    if(videle==null)
-    {
-        console.log(`got remote stream, peer ${peer}`);
-        //assign stream to new HTML video element
-        var vidElement = document.createElement('video');
-        vidElement.setAttribute('autoplay', '');
-        vidElement.setAttribute('muted', '');
-        vidElement.srcObject = event.streams[0];
+    // var videle = document.getElementById('remoteVideo_'+peer);
+    // if(videle==null)
+    // {
+    //     console.log(`got remote stream, peer ${peer}`);
+    //     //assign stream to new HTML video element
+    //     var vidElement = document.getElementById('localVideo');
+    //     vidElement.setAttribute('autoplay', '');
+    //     vidElement.setAttribute('muted', '');
+    //     vidElement.srcObject = event.streams[0];
 
-        localStream = event.streams[0];
+    //     localStream = event.streams[0];
     
-        var vidContainer = document.createElement('div');
-        vidContainer.setAttribute('id', 'remoteVideo_' + peer);
-        vidContainer.setAttribute('class', 'videoContainer');
-        vidContainer.appendChild(vidElement);
-        vidContainer.appendChild(makeLabel(peerConnections[peer].displayName));
-        vidContainer.appendChild(makeAudioLabel(peerConnections[peer].isMute));
+    //     var vidContainer = document.createElement('div');
+    //     vidContainer.setAttribute('id', 'remoteVideo_' + peer);
+    //     vidContainer.setAttribute('class', 'videoContainer');
+    //     vidContainer.appendChild(vidElement);
+    //     vidContainer.appendChild(makeLabel(peerConnections[peer].displayName));
+    //     vidContainer.appendChild(makeAudioLabel(peerConnections[peer].isMute));
     
-        document.getElementById('videos').appendChild(vidContainer);
+    //     document.getElementById('videos').appendChild(vidContainer);
     
-        updateLayout();
-    }
+    //     updateLayout();
+    // }
+    var vidElement = document.getElementById('localVideo');
+    vidElement.srcObject = event.streams[0];
+    localStream = event.streams[0];
 }
   
 function checkPeerDisconnect(event, peer) {

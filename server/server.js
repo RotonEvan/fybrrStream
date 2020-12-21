@@ -17,9 +17,94 @@ const serverConfig = {
 };
 
 const handleRequest = function(request, response) {
-    console.log("request received : " + request);
+  console.log("request received : " + request);
 
-    //TO-DO
+  //TO-DO
+  if (request.url === '/client.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/client.js'));
+  } else if (request.url === '/font-awesome.min.css') {
+    response.writeHead(200, { 'Content-Type': 'text/css' });
+    response.end(fs.readFileSync('client/font-awesome.min.css'));
+  } else if (request.url === '/style.css') {
+    response.writeHead(200, { 'Content-Type': 'text/css' });
+    response.end(fs.readFileSync('client/style.css'));
+  } else if (request.url === '/css/style.css') {
+    response.writeHead(200, { 'Content-Type': 'text/css' });
+    response.end(fs.readFileSync('client/css/style.css'));
+  } else if (request.url === '/css/bootstrap.min.css') {
+    response.writeHead(200, { 'Content-Type': 'text/css' });
+    response.end(fs.readFileSync('client/css/bootstrap.min.css'));
+  } else if (request.url === '/css/animsition.min.css') {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    response.end(fs.readFileSync('client/css/animsition.min.css'));
+  } else if (request.url === '/favicon/apple-touch-icon.png') {
+    response.writeHead(200, { 'Content-Type': 'image/png' });
+    response.end(fs.readFileSync('client/favicon/apple-touch-icon.png'));
+  } else if (request.url === '/favicon/favicon-16x16.png') {
+    response.writeHead(200, { 'Content-Type': 'image/png' });
+    response.end(fs.readFileSync('client/favicon/favicon-16x16.png'));
+  } else if (request.url === '/favicon/favicon-32x32.png') {
+    response.writeHead(200, { 'Content-Type': 'image/png' });
+    response.end(fs.readFileSync('client/favicon/favicon-32x32.png'));
+  } else if (request.url === '/favicon/site.html') {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    response.end(fs.readFileSync('client/favicon/site.html'));
+  } else if (request.url === '/fonts/butler_extrabold-webfont.eot') {
+    response.writeHead(200, { 'Content-Type': 'font/eot' });
+    response.end(fs.readFileSync('client/fonts/butler_extrabold-webfont.eot'));
+  } else if (request.url === '/fonts/butler_extrabold-webfont.html') {
+    response.writeHead(200, { 'Content-Type': 'font/html' });
+    response.end(fs.readFileSync('client/fonts/butler_extrabold-webfont.html'));
+  } else if (request.url === '/fonts/butler_extrabold-webfont.ttf') {
+    response.writeHead(200, { 'Content-Type': 'font/ttf' });
+    response.end(fs.readFileSync('client/fonts/butler_extrabold-webfont.ttf'));
+  } else if (request.url === '/fonts/butler_extrabold-webfont.woff') {
+    response.writeHead(200, { 'Content-Type': 'font/woff' });
+    response.end(fs.readFileSync('client/fonts/butler_extrabold-webfont.woff'));
+  } else if (request.url === '/fonts/butler_extrabold-webfont41d.eot') {
+    response.writeHead(200, { 'Content-Type': 'font/eot' });
+    response.end(fs.readFileSync('client/fonts/butler_extrabold-webfont41d.eot'));
+  } else if (request.url === '/img/bg-body.png') {
+    response.writeHead(200, { 'Content-Type': 'image/png' });
+    response.end(fs.readFileSync('client/img/bg-body.png'));
+  } else if (request.url === '/img/bg-promo.png') {
+    response.writeHead(200, { 'Content-Type': 'image/png' });
+    response.end(fs.readFileSync('client/img/bg-promo.png'));
+  } else if (request.url === '/js/animation.gsap.min.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/animation.gsap.min.js'));
+  } else if (request.url === '/js/animation.min.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/animation.min.js'));
+  } else if (request.url === '/js/bootstrap.min.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/bootstrap.min.js'));
+  } else if (request.url === '/js/jquery.min.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/jquery.min.js'));
+  } else if (request.url === '/js/popper.min.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/popper.min.js'));
+  } else if (request.url === '/js/script.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/script.js'));
+  } else if (request.url === '/js/ScrollMagic.min.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/ScrollMagic.min.js'));
+  } else if (request.url === '/js/smoothscroll.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/smoothscroll.js'));
+  } else if (request.url === '/js/TweenMax.min.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/js/TweenMax.min.js'));
+  } else if (request.url === '/room') {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    response.end(fs.readFileSync('client/room.html'));
+  } else {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    response.end(fs.readFileSync('client/index.html'));
+  }
 }
 
 // setting up server
@@ -63,31 +148,31 @@ wss.on("connection", function (ws) {
         // room already present with source node in the room
         if (currRoom.isNodeLimitNotReached()) {
           // if source limit is not reached
-          sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
-          var currNode = currRoom.addNode(peer_id, score, limit, ws);
-          // sendSourceStream(peer_id, currRoom);
-          currRoom.linkNodes(currNode);
+          sendSourceStream(peer_id, currRoom);
+          // sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
+          // var currNode = currRoom.addNode(peer_id, score, limit, ws);
+          // currRoom.linkNodes(currNode);
         }
         else {
           // source limit reached; peer joining protocol begins
-          var currNode = currRoom.addNode(peer_id, score, limit, ws);
+          currRoom.addNode(peer_id, score, limit, ws);
 
           // check if node limit is more than those directly connected to source
           var [minNodeID, minNodeLimit] = currRoom.findMin();
 
           if (limit > minNodeLimit) {
             // replace
-            sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
-            sendMessage('server', minNodeID, 'PARENT', JSON.stringify({'peer' : peer_id}));
-            // replaceSourceStream(peer_id, minNodeID, currRoom);
-            currRoom.delinkNodes(minNodeID);
-            currRoom.linkNodes(minNodeID, peer_id);
+            // sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
+            // sendMessage('server', minNodeID, 'PARENT', JSON.stringify({'peer' : peer_id}));
+            // currRoom.delinkNodes(minNodeID);
+            // currRoom.linkNodes(minNodeID, peer_id);
+            replaceSourceStream(peer_id, minNodeID, currRoom);
           }
           else {
             // send best peers list
 
             var bestpeer = await currRoom.getBestNodes()[0].id.then(() => {
-              sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}));
+              sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}), currRoom);
               currRoom.linkNodes(peer_id, bestpeer);
             });
 
@@ -101,7 +186,7 @@ wss.on("connection", function (ws) {
         newRoom.addNode(peer_id, score, limit, ws);
 
         // inform node that it is source node
-        sendMessage('server', peer_id, 'SOURCE', JSON.stringify({'room' : room}), room);
+        sendMessage('server', peer_id, 'SOURCE', JSON.stringify({'room' : room}), newRoom);
       }
     }
     else if(signal.context == 'LEAVE' && signal.to == 'server') {
@@ -110,6 +195,7 @@ wss.on("connection", function (ws) {
       var room = data.roomID;
 
       peerLeaving(peer_id, rooms[room]);
+      
     }
     else if(signal.to != 'server') {
       // message to be forwarded to a node
@@ -129,34 +215,63 @@ wss.on("connection", function (ws) {
 
 function peerLeaving (peer_id, room) {
   var parent_id = room.getParentID(peer_id);
-      var best_child_id = room.getBestChild(peer_id);
-      
-      if (best_child_id != -1){
-        replaceParentStream(parent_id, peer_id, best_child_id);
-      }
-      else if (parent_id == room.getSourceID()){
-          best_child_id = room.findNextBestNode();
-          if (best_child_id != -1) {
-            sendSourceStream(best_child_id, room);
-          }
-      }
+  var best_child_id = room.getBestChild(peer_id);
+  
+  if (best_child_id != -1){
+    replaceParentStream(parent_id, best_child_id, peer_id, room);
+    sendMessage('server', best_child_id, 'PARENT', JSON.stringify({'peer' : parent_id}));
+    room.delinkNodes(best_child_id, peer_id);
+    room.linkNodes(best_child_id, parent_id);
+  }
+  else if (parent_id == room.getSourceID()){
+    best_child_id = room.findNextBestNode();
+    if (best_child_id != -1) {
+      sendSourceStream(best_child_id, room);
+    }
+  }
 }
 
-function sendSourceStream(peer, room) {
-  var src = room.getSourceID();
-  sendMessage('server', src, 'SEND', JSON.stringify({'peer' : peer}), room);
+function sendSourceStream(peer_id, currRoom) {
+  // var src = room.getSourceID();
+  // sendMessage('server', src, 'SEND', JSON.stringify({'peer' : peer}), room);
+  sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), currRoom);
+  var currNode = currRoom.addNode(peer_id, score, limit, ws);
+  currRoom.linkNodes(currNode);
 }
 
-function replaceSourceStream(newPeer, oldPeer, room) {
-  var src = room.getSourceID();
-  sendMessage('server', src, 'REPLACE', JSON.stringify({'newPeer' : newPeer, 'oldPeer' : oldPeer}), room);
-  sendMessage('server', newPeer, 'SEND', JSON.stringify({'peer' : oldPeer}), room);
+function replaceSourceStream(peer_id, minNodeID, currRoom) {
+  sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), currRoom);
+  sendMessage('server', minNodeID, 'PARENT', JSON.stringify({'peer' : peer_id}));
+  currRoom.delinkNodes(minNodeID);
+  currRoom.linkNodes(minNodeID, peer_id);
 }
 
 function sendMessage (from, to, context, data, room) {
   room.getWebsocket(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
 }
 
-function replaceParentStream(id, newPeer, oldPeer, room){
-  sendMessage('server', id, 'REPLACE', JSON.stringify({'newPeer' : newPeer, 'oldPeer' : oldPeer}), room);
+function replaceParentStream(id, newPeer, oldPeer, currRoom){
+  // sendMessage('server', id, 'REPLACE', JSON.stringify({'newPeer' : newPeer, 'oldPeer' : oldPeer}), room);
+  sendMessage('server', newPeer, 'PARENT', JSON.stringify({'peer' : id}), currRoom);
+  currRoom.delinkNodes(newPeer, oldPeer);
+  currRoom.linkNodes(newPeer, id);
 }
+
+console.log('Server running.');
+
+// -----------------------------------------------------------------------------------------------------------------------------
+
+// Separate server to redirect from http to https
+http.createServer(function (req, res) {
+  console.log(req.headers['host']+req.url);
+  res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+  res.end();
+}).listen(HTTP_PORT);
+
+setInterval(() => {
+wss.clients.forEach((client) => {
+  if (client.readyState === WebSocket.OPEN) {
+    client.send(JSON.stringify(new Date().toTimeString()));
+  }
+});
+}, 1000);

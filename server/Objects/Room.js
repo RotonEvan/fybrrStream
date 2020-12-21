@@ -28,7 +28,7 @@ module.exports = class Room {
         this.node_data[id] = new Node(id, score, limit, websocket);
         this.size++;
 
-        return this.node_data[id];
+        // return this.node_data[id];
     }
 
     findMin () {

@@ -11,14 +11,14 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-  <script src="webrtc.js"></script>
+  <script src="client.js"></script>
   <script src="js/script.js"></script>
 </head>
 
 <body>
   <nav class="navbar">
     <div class="navbar-title">
-      <a href="#">fybrrChat</a>
+      <a href="./index.html">fybrrStream</a>
     </div>
     <div class="navbar-right">
       <a onclick="copyLink()" class="copy-button" title="Copy meeting link">Copy meeting link  <i class="fa fa-copy"></i></a>
@@ -28,21 +28,21 @@
   <br><br><br>
   <div id="videos" class="videos">
     <div id="localVideoContainer" class="videoContainer">
-      <video id="localVideo" autoplay muted></video>
+      <video id="localVideo" autoplay></video>
     </div>
 
     <!-- Remote videos get appended here -->
 
   </div>
 
-  <div class="buttons">
+  <!-- <div class="buttons">
     <a id="audio" class="audio off" onclick="toggleAudio()" title="Toggle Microphone"><i class="fa fa-microphone-slash" aria-hidden="true"></i></a>
     <a id="video" class="video off" onclick="toggleVideo()" title="Toggle Webcam"><i class="fa fa-video-camera" aria-hidden="true"></i></a>
     <a id="btn-getDisplayMedia" class="screenshare off" onclick="screenshare()" title="Toggle Screenshare"><i class="fa fa-laptop" aria-hidden="true"></i></a>
-    <!-- <a id="flip" class="flip" onclick="toggleCamera()"><i class="fa fa-refresh" aria-hidden="true"></i></a> -->
-    <!-- <a id="screenshare" class="screenshare" onclick="toggleScreen()"></a> -->
+    <a id="flip" class="flip" onclick="toggleCamera()"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+    <a id="screenshare" class="screenshare" onclick="toggleScreen()"></a>
     <a id="leave" class="leave off" onclick="leaveRoom()" style="font-size: 26px;" title="Leave Room"><i class="fa fa-times" aria-hidden="true"></i></a>
-  </div>
+  </div> -->
 
   <script
 			  src="https://code.jquery.com/jquery-3.5.1.min.js"
