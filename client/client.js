@@ -130,26 +130,52 @@ function messageHandler(message) {
         // RTC Connection setup starts with CONNECT request - sender is Child, receiver is Parent
         sendMessage(uuid, peer, 'CONNECT', JSON.stringify({'roomID' : roomHash}));
     }
+    else if (context == 'DIRECTCHILDOFSOURCEANDREPLACE') {
+        console.log("Child of Source");
+        var data = JSON.parse(signal.data);
+        var peer = data.parent;
+        var minNodeID = data.child;
+        // RTC Connection setup starts with CONNECT request - sender is Child, receiver is Parent
+        sendMessage(uuid, peer, 'CONNECT', JSON.stringify({'roomID' : roomHash}));
+        function checkLocalStream() {
+            if (!(localStream)) {
+                window.setTimeout(checkLocalStream, 5000);
+            }
+            else {
+                sendMessage(uuid, minNodeID, 'PARENT', JSON.stringify({'peer' : uuid, 'roomID' : roomHash}));
+            }
+        }
+        checkLocalStream();
+    }
     else if (context == 'PARENT') {
         var data = JSON.parse(signal.data);
         var peer = data.peer;
+        console.log(`Parent : ${peer}`);
         // RTC Connection setup starts with CONNECT request - sender is Child, receiver is Parent
         sendMessage(uuid, peer, 'CONNECT', JSON.stringify({'roomID' : roomHash}));
     }
     else if (context == 'CONNECT') {
         var peer = signal.from;
+        console.log(`Connect request from Child : ${peer}`);
+        setInterval(() => {
+            while (!(localStream)) {
+                // wait till localStream is set
+            }
+        });
         setUpPeer(peer, true);
         // sending CONNECT_ACK response
         sendMessage(uuid, peer, 'CONNECT_ACK', JSON.stringify({'roomID' : roomHash}));
     }
     else if (context == 'CONNECT_ACK') {
         var peer = signal.from;
+        console.log(`Connection ACK from parent : ${peer}`);
         setUpPeer(peer);
     }
     else if (context == 'SDP') {
         var data = JSON.parse(signal.data);
         var sdp = data.sdp;
         var peer = signal.from;
+        console.log(`received sdp from peer : ${peer}`);
         peerConnections[peer].pc.setRemoteDescription(new RTCSessionDescription(sdp)).then(function () {
             if (sdp.type == 'offer') {
                 peerConnections[peer].pc.createAnswer().then(description => createdDescription(description, peer)).catch(errorHandler);
@@ -159,8 +185,8 @@ function messageHandler(message) {
     else if (context == 'ICE') {
         var data = JSON.parse(signal.data);
         var ice = data.ice;
-        console.log(ice);
         var peer = signal.from;
+        console.log(`received ice from peer : ${peer}`);
         peerConnections[peer].pc.addIceCandidate(new RTCIceCandidate(ice)).catch(errorHandler);
     }
 }
@@ -193,36 +219,13 @@ function gotIceCandidate(event, peer) {
 }
   
 function createdDescription(description, peer) {
-    console.log(`got description, peer ${peer}`);
+    console.log(`created description for peer : ${peer}`);
     peerConnections[peer].pc.setLocalDescription(description).then(function () {
         sendMessage(uuid, peer, 'SDP', JSON.stringify({'sdp' : peerConnections[peer].pc.localDescription, 'roomID' : roomHash}));
     }).catch(errorHandler);
 }
   
 function gotRemoteStream(event, peer) {
-    // var videle = document.getElementById('remoteVideo_'+peer);
-    // if(videle==null)
-    // {
-    //     console.log(`got remote stream, peer ${peer}`);
-    //     //assign stream to new HTML video element
-    //     var vidElement = document.getElementById('localVideo');
-    //     vidElement.setAttribute('autoplay', '');
-    //     vidElement.setAttribute('muted', '');
-    //     vidElement.srcObject = event.streams[0];
-
-    //     localStream = event.streams[0];
-    
-    //     var vidContainer = document.createElement('div');
-    //     vidContainer.setAttribute('id', 'remoteVideo_' + peer);
-    //     vidContainer.setAttribute('class', 'videoContainer');
-    //     vidContainer.appendChild(vidElement);
-    //     vidContainer.appendChild(makeLabel(peerConnections[peer].displayName));
-    //     vidContainer.appendChild(makeAudioLabel(peerConnections[peer].isMute));
-    
-    //     document.getElementById('videos').appendChild(vidContainer);
-    
-    //     updateLayout();
-    // }
     var vidElement = document.getElementById('localVideo');
     vidElement.srcObject = event.streams[0];
     localStream = event.streams[0];
@@ -232,6 +235,7 @@ function checkPeerDisconnect(event, peer) {
     var state = peerConnections[peer].pc.iceConnectionState;
     console.log(`connection with peer ${peer} ${state}`);
     if (state === "failed" || state === "closed") {
+        sendMessage(uuid, 'server', "FAIL", JSON.stringify({'roomID' : roomHash, 'node' : peer}));
         delete peerConnections[peer];
         // document.getElementById('videos').removeChild(document.getElementById('remoteVideo_' + peer));
         // updateLayout();

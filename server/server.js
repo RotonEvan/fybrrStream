@@ -109,7 +109,7 @@ const handleRequest = function(request, response) {
 
 // setting up server
 
-const httpsServer = http.createServer(serverConfig, handleRequest);
+const httpsServer = https.createServer(serverConfig, handleRequest);
 httpsServer.listen(HTTPS_PORT);
 
 //setting up socket server
@@ -151,9 +151,7 @@ wss.on("connection", function (ws) {
           // if source limit is not reached
           currRoom.addNode(peer_id, score, limit, ws);
           sendSourceStream(peer_id, currRoom);
-          // sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
-          // var currNode = currRoom.addNode(peer_id, score, limit, ws);
-          // currRoom.linkNodes(currNode);
+          
         }
         else {
           // source limit reached; peer joining protocol begins
@@ -163,10 +161,7 @@ wss.on("connection", function (ws) {
 
           if (limit > minNodeLimit) {
             // replace
-            // sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
-            // sendMessage('server', minNodeID, 'PARENT', JSON.stringify({'peer' : peer_id}));
-            // currRoom.delinkNodes(minNodeID);
-            // currRoom.linkNodes(minNodeID, peer_id);
+            
             currRoom.addNode(peer_id, score, limit, ws);
             replaceSourceStream(peer_id, minNodeID, currRoom);
           }
@@ -199,11 +194,20 @@ wss.on("connection", function (ws) {
       peerLeaving(peer_id, currRoom);
       currRoom.removeNode(peer_id);
     }
+    else if (signal.context == 'FAIL' && signal.to == 'server') {
+      var data = JSON.parse(signal.data);
+      var room = data.roomID;
+      var currRoom = rooms[room];
+      var node = data.node;
+      peerLeaving(node, currRoom);
+      currRoom.removeNode(node);
+    }
     else if(signal.to != 'server') {
       // message to be forwarded to a node
+      console.log(signal);
       receiver = signal.to;
       var data = JSON.parse(signal.data);
-      console.log(data);
+      // console.log(data);
 
       var room = data.roomID;
       if (rooms[room].getWS(receiver).readyState === WebSocket.OPEN) {
@@ -245,8 +249,7 @@ function sendSourceStream(peer_id, currRoom) {
 }
 
 function replaceSourceStream(peer_id, minNodeID, currRoom) {
-  sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), currRoom);
-  sendMessage('server', minNodeID, 'PARENT', JSON.stringify({'peer' : peer_id}));
+  sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCEANDREPLACE', JSON.stringify({'parent' : currRoom.getSourceID(), 'child' : minNodeID}), currRoom);
   currRoom.delinkNodes(minNodeID);
   currRoom.linkNodes(minNodeID, peer_id);
 }

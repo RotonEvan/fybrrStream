@@ -56,6 +56,7 @@ module.exports = class Node {
 
     removeChild(node) {
         this.adj_list.splice(this.adj_list.indexOf(node), 1);
+        this.increaseSlots();
     }
 
     minLimitChild () {
