@@ -149,6 +149,7 @@ wss.on("connection", function (ws) {
         // room already present with source node in the room
         if (currRoom.isNodeLimitNotReached()) {
           // if source limit is not reached
+          currRoom.addNode(peer_id, score, limit, ws);
           sendSourceStream(peer_id, currRoom);
           // sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
           // var currNode = currRoom.addNode(peer_id, score, limit, ws);
@@ -239,7 +240,6 @@ function peerLeaving (peer_id, room) {
 function sendSourceStream(peer_id, currRoom) {
   // var src = room.getSourceID();
   // sendMessage('server', src, 'SEND', JSON.stringify({'peer' : peer}), room);
-  currRoom.addNode(peer_id, score, limit, ws);
   sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), currRoom);
   currRoom.linkNodes(peer_id);
 }
