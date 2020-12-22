@@ -206,9 +206,9 @@ wss.on("connection", function (ws) {
       var data = JSON.parse(signal.data);
       console.log(data);
 
-      var room = data.roomID;peerLeaving
+      var room = data.roomID;
 
-      room.getWS(receiver).send(JSON.stringify(signal));
+      rooms[room].getWS(receiver).send(JSON.stringify(signal));
     }
 
   });
