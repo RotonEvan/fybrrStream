@@ -4,7 +4,7 @@ module.exports = class Room {
     constructor (room_id, source_id) {
         this.room_id = room_id;
         this.node_data = {};
-        this.size = 1;
+        this.size = 0;
         this.source_id = source_id;
     }
 
@@ -74,7 +74,7 @@ module.exports = class Room {
               return 1;
             }
             return 0;
-          });
+        });
         
         this.node_data.forEach(i => {
             if (i.getSlots() > 0){
@@ -86,8 +86,8 @@ module.exports = class Room {
             }    
         });
 
-        return best_nodes;
-    }
+        return best_nodes[0].id;
+    }    
 
     findNextBestNode () {
         var max = -1;

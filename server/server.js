@@ -144,7 +144,8 @@ wss.on("connection", function (ws) {
       var room = data.roomID;
       var score = data.score;
       var limit = data.limit;
-      if (currRoom = rooms[room]) {
+      var currRoom = rooms[room];
+      if (currRoom) {
         // room already present with source node in the room
         if (currRoom.isNodeLimitNotReached()) {
           // if source limit is not reached
@@ -171,7 +172,7 @@ wss.on("connection", function (ws) {
           else {
             // send best peers list
 
-            var bestpeer = await currRoom.getBestNodes()[0].id.then(() => {
+            var bestpeer = await currRoom.getBestNodes().then(() => {
               sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}), currRoom);
               currRoom.linkNodes(peer_id, bestpeer);
             });
@@ -194,9 +195,9 @@ wss.on("connection", function (ws) {
 
       var data = JSON.parse(signal.data);
       var room = data.roomID;
-
-      peerLeaving(peer_id, rooms[room]);
-      
+      var currRoom = rooms[room];
+      peerLeaving(peer_id, currRoom);
+      currRoom.removeNode(peer_id);
     }
     else if(signal.to != 'server') {
       // message to be forwarded to a node
@@ -204,7 +205,7 @@ wss.on("connection", function (ws) {
       var data = JSON.parse(signal.data);
       console.log(data);
 
-      var room = data.roomID;
+      var room = data.roomID;peerLeaving
 
       room.getWS(receiver).send(JSON.stringify(signal));
     }
@@ -220,14 +221,17 @@ function peerLeaving (peer_id, room) {
   
   if (best_child_id != -1){
     replaceParentStream(parent_id, best_child_id, peer_id, room);
-    sendMessage('server', best_child_id, 'PARENT', JSON.stringify({'peer' : parent_id}));
-    room.delinkNodes(best_child_id, peer_id);
-    room.linkNodes(best_child_id, parent_id);
+    // sendMessage('server', best_child_id, 'PARENT', JSON.stringify({'peer' : parent_id}));
+    // room.delinkNodes(best_child_id, peer_id);
+    // room.linkNodes(best_child_id, parent_id);
   }
   else if (parent_id == room.getSourceID()){
     best_child_id = room.findNextBestNode();
     if (best_child_id != -1) {
-      sendSourceStream(best_child_id, room);
+      // sendSourceStream(best_child_id, room);
+      sendMessage('server', best_child_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
+      room.delinkNodes(best_child_id, room.getParentID(best_child_id));
+      room.linkNodes(best_child_id);
     }
   }
 }
@@ -236,8 +240,8 @@ function sendSourceStream(peer_id, currRoom) {
   // var src = room.getSourceID();
   // sendMessage('server', src, 'SEND', JSON.stringify({'peer' : peer}), room);
   sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), currRoom);
-  var currNode = currRoom.addNode(peer_id, score, limit, ws);
-  currRoom.linkNodes(currNode);
+  currRoom.addNode(peer_id, score, limit, ws);
+  currRoom.linkNodes(peer_id);
 }
 
 function replaceSourceStream(peer_id, minNodeID, currRoom) {

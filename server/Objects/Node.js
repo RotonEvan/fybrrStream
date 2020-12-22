@@ -51,7 +51,7 @@ module.exports = class Node {
 
     appendChild (node) {
         this.adj_list.push(node);
-        node.decreaseSlots();
+        this.decreaseSlots();
     }
 
     removeChild(node) {
