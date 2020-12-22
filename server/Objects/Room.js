@@ -64,29 +64,53 @@ module.exports = class Room {
 
     getBestNodes (size = this.getSize()) {
         var n = Math.log(size);
-        var best_nodes = [];
+        console.log(n);
+        var best_node;
 
-        this.node_data.sort(function(x, y) {
-            if (x.getScore() < y.getScore()) {
+        var data = this.node_data;
+
+        // Create items array
+        var items = Object.keys(this.node_data).map(function(key) {
+            return [key, data[key]];
+        });
+
+        // console.log(items);
+
+        items.sort(function(x, y) {
+            if (x[1].getScore() < y[1].getScore()) {
               return -1;
             }
-            if (x.getScore() > y.getScore()) {
+            if (x[1].getScore() > y[1].getScore()) {
               return 1;
             }
             return 0;
         });
-        
-        this.node_data.forEach(i => {
-            if (i.getSlots() > 0){
-                var node_dic = {'id' : i.getID(), 'score' : i.getScore(), 'slots' : i.getSlots()};
-                best_nodes.push(node_dic);
-                if (best_nodes.length == n){
-                    break;
-                }
-            }    
-        });
 
-        return best_nodes[0].id;
+        console.log(items);
+
+        for (let i = 0; i < items.length; i++) {
+            const element = items[i];
+            if (element[1].getSlots() > 0) {
+                best_node = element[1].getID();
+                break;
+            }
+        }
+        
+        // items.every(j => {
+        //     var i = j[1];
+        //     console.log(i.getSlots());
+        //     if (i.getSlots() > 0){
+        //         var node_dic = {'id' : i.getID(), 'score' : i.getScore(), 'slots' : i.getSlots()};
+        //         best_nodes.push(node_dic);
+        //         if (best_nodes.length == n){
+        //             return false;
+        //         }
+        //     }    
+        // });
+
+        console.log(best_node);
+
+        return best_node;
     }    
 
     findNextBestNode () {

@@ -83,7 +83,9 @@ function init() {
             googEchoCancellation2: true,
             googAutoGainControl2: true,
             googNoiseSuppression2: true
-        }
+        },
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: true
     };
 
     // setting up socket connection
@@ -112,6 +114,7 @@ function messageHandler(message) {
               .then(stream => {
                 console.log("local stream");
                 localStream = stream;
+                localStream.getAudioTracks()[0].enabled = false;
                 document.getElementById('localVideo').srcObject = stream;
                 localVideo = document.getElementById('localVideo');
               }).catch(errorHandler);
@@ -135,13 +138,13 @@ function messageHandler(message) {
     }
     else if (context == 'CONNECT') {
         var peer = signal.from;
-        setUpPeer(peer);
+        setUpPeer(peer, true);
         // sending CONNECT_ACK response
         sendMessage(uuid, peer, 'CONNECT_ACK', JSON.stringify({'roomID' : roomHash}));
     }
     else if (context == 'CONNECT_ACK') {
         var peer = signal.from;
-        setUpPeer(peer, true);
+        setUpPeer(peer);
     }
     else if (context == 'SDP') {
         var data = JSON.parse(signal.data);
@@ -168,7 +171,8 @@ function setUpPeer(peer, initCall = false) {
     peerConnections[peer].pc.ontrack = event => gotRemoteStream(event, peer);
     peerConnections[peer].pc.oniceconnectionstatechange = event => checkPeerDisconnect(event, peer);
     
-    if (!(initCall)) {
+    if (initCall) {
+        console.log('adding tracks');
         localStream.getTracks().forEach(t => {
             peerConnections[peer].pc.addTrack(t, localStream);
         });
@@ -182,6 +186,7 @@ function setUpPeer(peer, initCall = false) {
 }
   
 function gotIceCandidate(event, peer) {
+    console.log(`ice: ${uuid} to ${peer}`);
     if (event.candidate != null) {
         sendMessage(uuid, peer, 'ICE', JSON.stringify({'ice' : event.candidate, 'roomID' : roomHash}));
     }
@@ -228,8 +233,8 @@ function checkPeerDisconnect(event, peer) {
     console.log(`connection with peer ${peer} ${state}`);
     if (state === "failed" || state === "closed") {
         delete peerConnections[peer];
-        document.getElementById('videos').removeChild(document.getElementById('remoteVideo_' + peer));
-        updateLayout();
+        // document.getElementById('videos').removeChild(document.getElementById('remoteVideo_' + peer));
+        // updateLayout();
     }
 }
 

@@ -109,7 +109,7 @@ const handleRequest = function(request, response) {
 
 // setting up server
 
-const httpsServer = http.createServer(serverConfig, handleRequest);
+const httpsServer = https.createServer(serverConfig, handleRequest);
 httpsServer.listen(HTTPS_PORT);
 
 //setting up socket server
@@ -173,11 +173,9 @@ wss.on("connection", function (ws) {
           else {
             // send best peers list
 
-            var bestpeer = await currRoom.getBestNodes().then(() => {
-              sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}), currRoom);
-              currRoom.linkNodes(peer_id, bestpeer);
-            });
-
+            var bestpeer = currRoom.getBestNodes();
+            sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}), currRoom);
+            currRoom.linkNodes(peer_id, bestpeer);
           }
         }
       }
