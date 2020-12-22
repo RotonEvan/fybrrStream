@@ -156,6 +156,7 @@ function messageHandler(message) {
     else if (context == 'ICE') {
         var data = JSON.parse(signal.data);
         var ice = data.ice;
+        console.log(ice);
         var peer = signal.from;
         peerConnections[peer].pc.addIceCandidate(new RTCIceCandidate(ice)).catch(errorHandler);
     }
