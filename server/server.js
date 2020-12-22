@@ -205,8 +205,9 @@ wss.on("connection", function (ws) {
       console.log(data);
 
       var room = data.roomID;
-
-      rooms[room].getWS(receiver).send(JSON.stringify(signal));
+      if (rooms[room].getWS(receiver).readyState === WebSocket.OPEN) {
+        rooms[room].getWS(receiver).send(JSON.stringify(signal));
+      }
     }
 
   });
@@ -250,6 +251,9 @@ function replaceSourceStream(peer_id, minNodeID, currRoom) {
 }
 
 function sendMessage (from, to, context, data, room) {
+  if (room.getWS(to).readyState === WebSocket.OPEN) {
+    room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
+  }
   room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
 }
 
