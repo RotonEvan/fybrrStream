@@ -97,11 +97,26 @@ function sendMessage (from, to, context, data) {
 }
 
 function messageHandler(message) {
-    var signal = JSON.parse(message);
+    // console.log(message);
+    var signal = JSON.parse(message.data);
     var context = signal.context;
 
     if (context == 'SOURCE') {
         isSource = true;
+
+        if (navigator.mediaDevices.getUserMedia) {
+            console.log("local video");
+            navigator.mediaDevices.getUserMedia(constraints)
+              .then(stream => {
+                console.log("local stream");
+                localStream = stream;
+                document.getElementById('localVideo').srcObject = stream;
+                localVideo = document.getElementById('localVideo');
+              }).catch(errorHandler);
+        }
+        else {
+            alert('Your browser does not support getUserMedia API');
+        }
     }
     else if (context == 'DIRECTCHILDOFSOURCE') {
         console.log("Child of Source");

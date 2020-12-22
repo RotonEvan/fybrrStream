@@ -181,10 +181,11 @@ wss.on("connection", function (ws) {
       }
       else {
         // this node is source node; room needs to be created
+        console.log('source enters');
         var newRoom = new Room(room, peer_id);
         rooms[room] = newRoom;
         newRoom.addNode(peer_id, score, limit, ws);
-
+        console.log(newRoom);
         // inform node that it is source node
         sendMessage('server', peer_id, 'SOURCE', JSON.stringify({'room' : room}), newRoom);
       }
@@ -205,7 +206,7 @@ wss.on("connection", function (ws) {
 
       var room = data.roomID;
 
-      room.getWebsocket(receiver).send(JSON.stringify(signal));
+      room.getWS(receiver).send(JSON.stringify(signal));
     }
 
   });
@@ -247,7 +248,7 @@ function replaceSourceStream(peer_id, minNodeID, currRoom) {
 }
 
 function sendMessage (from, to, context, data, room) {
-  room.getWebsocket(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
+  room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
 }
 
 function replaceParentStream(id, newPeer, oldPeer, currRoom){
@@ -271,7 +272,7 @@ http.createServer(function (req, res) {
 setInterval(() => {
 wss.clients.forEach((client) => {
   if (client.readyState === WebSocket.OPEN) {
-    client.send(JSON.stringify(new Date().toTimeString()));
+    client.send(JSON.stringify("1"));
   }
 });
 }, 1000);
