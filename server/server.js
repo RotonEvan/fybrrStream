@@ -239,8 +239,8 @@ function peerLeaving (peer_id, room) {
 function sendSourceStream(peer_id, currRoom) {
   // var src = room.getSourceID();
   // sendMessage('server', src, 'SEND', JSON.stringify({'peer' : peer}), room);
-  sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), currRoom);
   currRoom.addNode(peer_id, score, limit, ws);
+  sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), currRoom);
   currRoom.linkNodes(peer_id);
 }
 
