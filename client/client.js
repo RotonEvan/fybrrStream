@@ -64,8 +64,10 @@ function init() {
     uuid = create_UUID();
 
     // calculate and set limit
+    limit = prompt("Enter Limit: ");
 
     // calculate and set score
+    score = prompt("Enter Score: ");
 
     constraints = {
         video: {
