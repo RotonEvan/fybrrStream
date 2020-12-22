@@ -157,7 +157,6 @@ wss.on("connection", function (ws) {
         }
         else {
           // source limit reached; peer joining protocol begins
-          currRoom.addNode(peer_id, score, limit, ws);
 
           // check if node limit is more than those directly connected to source
           var [minNodeID, minNodeLimit] = currRoom.findMin();
@@ -168,12 +167,14 @@ wss.on("connection", function (ws) {
             // sendMessage('server', minNodeID, 'PARENT', JSON.stringify({'peer' : peer_id}));
             // currRoom.delinkNodes(minNodeID);
             // currRoom.linkNodes(minNodeID, peer_id);
+            currRoom.addNode(peer_id, score, limit, ws);
             replaceSourceStream(peer_id, minNodeID, currRoom);
           }
           else {
             // send best peers list
 
             var bestpeer = currRoom.getBestNodes();
+            currRoom.addNode(peer_id, score, limit, ws);
             sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}), currRoom);
             currRoom.linkNodes(peer_id, bestpeer);
           }

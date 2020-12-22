@@ -77,10 +77,10 @@ module.exports = class Room {
         // console.log(items);
 
         items.sort(function(x, y) {
-            if (x[1].getScore() < y[1].getScore()) {
+            if (x[1].getScore() > y[1].getScore()) {
               return -1;
             }
-            if (x[1].getScore() > y[1].getScore()) {
+            if (x[1].getScore() < y[1].getScore()) {
               return 1;
             }
             return 0;
