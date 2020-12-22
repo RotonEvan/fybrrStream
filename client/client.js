@@ -182,14 +182,14 @@ function setUpPeer(peer, initCall = false) {
   
 function gotIceCandidate(event, peer) {
     if (event.candidate != null) {
-        sendMessage(uuid, peer, 'ICE', JSON.stringify({'ice' : event.candidate}));
+        sendMessage(uuid, peer, 'ICE', JSON.stringify({'ice' : event.candidate, 'roomID' : roomHash}));
     }
 }
   
 function createdDescription(description, peer) {
     console.log(`got description, peer ${peer}`);
     peerConnections[peer].pc.setLocalDescription(description).then(function () {
-        sendMessage(uuid, peer, 'SDP', JSON.stringify({'sdp' : peerConnections[peer].pc.localDescription}));
+        sendMessage(uuid, peer, 'SDP', JSON.stringify({'sdp' : peerConnections[peer].pc.localDescription, 'roomID' : roomHash}));
     }).catch(errorHandler);
 }
   
