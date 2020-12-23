@@ -255,6 +255,7 @@ function sendSourceStream(peer_id, currRoom) {
 
 function replaceSourceStream(peer_id, minNodeID, currRoom) {
   sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCEANDREPLACE', JSON.stringify({'parent' : currRoom.getSourceID(), 'child' : minNodeID}), currRoom);
+  currRoom.linkNodes(peer_id);
   currRoom.delinkNodes(minNodeID);
   currRoom.linkNodes(minNodeID, peer_id);
 }
