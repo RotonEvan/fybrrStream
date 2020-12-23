@@ -125,11 +125,11 @@ wss.on("connection", function (ws) {
 
   ws.on('message', async function(message) {
     console.log(message);
-    var signal = JSON.parse(message);
-    
-    // message syntax : 
-    // 'from' : peerID/server; 'to' : peerID/server; 'context' : contextType; 'data' : content;
 
+    // message syntax : 
+    // msg = {'from' : peerID/'server'; 'to' : peerID/'server'; 'context' : contextType; 'data' : content};
+
+    var signal = JSON.parse(message);
     var peer_id = signal.from;
 
     //context - new peer joins
@@ -145,29 +145,25 @@ wss.on("connection", function (ws) {
       var score = data.score;
       var limit = data.limit;
       var currRoom = rooms[room];
+
+      // Check if room is already present( with source node) in the rooms.
       if (currRoom) {
-        // room already present with source node in the room
+        
+        // Check if source can serve some more direct children peers.
         if (currRoom.isNodeLimitNotReached()) {
-          // if source limit is not reached
           currRoom.addNode(peer_id, score, limit, ws);
           sendSourceStream(peer_id, currRoom);
-          
         }
+        // Otherwise execute the JOINING Protocol
         else {
-          // source limit reached; peer joining protocol begins
-
-          // check if node limit is more than those directly connected to source
           var [minNodeID, minNodeLimit] = currRoom.findMin();
 
+          // Check if limit of new node is more than those peers which are directly connected to source
           if (limit > minNodeLimit) {
-            // replace
-            
             currRoom.addNode(peer_id, score, limit, ws);
             replaceSourceStream(peer_id, minNodeID, currRoom);
           }
           else {
-            // send best peers list
-
             var bestpeer = currRoom.getBestNodes();
             currRoom.addNode(peer_id, score, limit, ws);
             sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}), currRoom);
@@ -175,8 +171,8 @@ wss.on("connection", function (ws) {
           }
         }
       }
+      // this node is source node; room needs to be created
       else {
-        // this node is source node; room needs to be created
         console.log('source enters');
         var newRoom = new Room(room, peer_id);
         rooms[room] = newRoom;
@@ -218,8 +214,6 @@ wss.on("connection", function (ws) {
   });
 });
 
-
-
 function peerLeaving (peer_id, room) {
   var parent_id = room.getParentID(peer_id);
   var best_child_id = room.getBestChild(peer_id);
@@ -254,18 +248,18 @@ function replaceSourceStream(peer_id, minNodeID, currRoom) {
   currRoom.linkNodes(minNodeID, peer_id);
 }
 
-function sendMessage (from, to, context, data, room) {
-  if (room.getWS(to).readyState === WebSocket.OPEN) {
-    room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
-  }
-  room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
-}
-
 function replaceParentStream(id, newPeer, oldPeer, currRoom){
   // sendMessage('server', id, 'REPLACE', JSON.stringify({'newPeer' : newPeer, 'oldPeer' : oldPeer}), room);
   sendMessage('server', newPeer, 'PARENT', JSON.stringify({'peer' : id}), currRoom);
   currRoom.delinkNodes(newPeer, oldPeer);
   currRoom.linkNodes(newPeer, id);
+}
+
+function sendMessage (from, to, context, data, room) {
+  if (room.getWS(to).readyState === WebSocket.OPEN) {
+    room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
+  }
+  room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
 }
 
 console.log('Server running.');

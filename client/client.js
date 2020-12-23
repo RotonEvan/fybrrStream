@@ -96,10 +96,6 @@ function init() {
     }
 }
 
-function sendMessage (from, to, context, data) {
-    socketConnection.send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
-}
-
 function messageHandler(message) {
     // console.log(message);
     var signal = JSON.parse(message.data);
@@ -158,11 +154,11 @@ function messageHandler(message) {
         var peer = signal.from;
         console.log(`Connect request from Child : ${peer}`);
         setInterval(() => {
-            while (!(localStream)) {
-                // wait till localStream is set
-            }
+            // Wait till localStream is set
+            while (!(localStream)) {}
         });
         setUpPeer(peer, true);
+
         // sending CONNECT_ACK response
         sendMessage(uuid, peer, 'CONNECT_ACK', JSON.stringify({'roomID' : roomHash}));
     }
@@ -242,6 +238,18 @@ function checkPeerDisconnect(event, peer) {
     }
 }
 
+// Call this method when user clicks on the "Leave Meeting" button.
+function sendLeavingRequest(){
+    console.log("I am leaving!");
+    sendMessage(uuid, 'server', "LEAVE", JSON.stringify({'roomID' : roomHash}));
+    delete peerConnections[uuid];
+    location.replace("https://fybrrStream/home.html");
+}
+
 function errorHandler(error) {
     console.log(error);
+}
+
+function sendMessage (from, to, context, data) {
+    socketConnection.send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
 }
