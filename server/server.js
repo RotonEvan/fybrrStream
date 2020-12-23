@@ -264,7 +264,7 @@ function sendMessage (from, to, context, data, room) {
   if (room.getWS(to).readyState === WebSocket.OPEN) {
     room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
   }
-  room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
+  // room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
 }
 
 function replaceParentStream(id, newPeer, oldPeer, currRoom){

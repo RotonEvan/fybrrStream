@@ -85,6 +85,7 @@ module.exports = class Node {
                 maximum = i;
             }    
         });
+        console.log(`Max Score Child : ${maximum.getID()}`);
         return maximum;
     }
 
