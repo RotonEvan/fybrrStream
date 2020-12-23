@@ -124,8 +124,12 @@ wss.on("connection", function (ws) {
   //ws - websocket of one peer
 
   ws.on('message', async function(message) {
-    console.log(message);
+    // console.log(message);
     var signal = JSON.parse(message);
+
+    if (signal.to == 'server') {
+      console.log(message);
+    }
     
     // message syntax : 
     // 'from' : peerID/server; 'to' : peerID/server; 'context' : contextType; 'data' : content;
@@ -199,6 +203,7 @@ wss.on("connection", function (ws) {
       var room = data.roomID;
       var currRoom = rooms[room];
       var node = data.node;
+      console.log(`${node} failed`);
       peerLeaving(node, currRoom);
       currRoom.removeNode(node);
     }
