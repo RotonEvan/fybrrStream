@@ -61,7 +61,7 @@ function init() {
     displayName = prompt("Enter your name: ");
 
     // set UUID
-    uuid = create_UUID();
+    uuid = displayName + create_UUID();
 
     // calculate and set limit
     limit = prompt("Enter Limit: ");
