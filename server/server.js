@@ -209,7 +209,7 @@ wss.on("connection", function (ws) {
     }
     else if(signal.to != 'server') {
       // message to be forwarded to a node
-      console.log(signal);
+      // console.log(signal);
       receiver = signal.to;
       var data = JSON.parse(signal.data);
       // console.log(data);
