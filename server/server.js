@@ -255,7 +255,6 @@ function replaceSourceStream(peer_id, minNodeID, currRoom) {
   currRoom.linkNodes(minNodeID, peer_id);
 }
 
-<<<<<<< HEAD
 function sendMessage (from, to, context, data, room) {
   if (room.getWS(to).readyState === WebSocket.OPEN) {
     room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
@@ -263,8 +262,6 @@ function sendMessage (from, to, context, data, room) {
   // room.getWS(to).send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
 }
 
-=======
->>>>>>> c2f270caa2d45c0e5341350e0e1118722db23aa3
 function replaceParentStream(id, newPeer, oldPeer, currRoom){
   // sendMessage('server', id, 'REPLACE', JSON.stringify({'newPeer' : newPeer, 'oldPeer' : oldPeer}), room);
   sendMessage('server', newPeer, 'PARENT', JSON.stringify({'peer' : id}), currRoom);
