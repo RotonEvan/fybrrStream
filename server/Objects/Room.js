@@ -63,7 +63,7 @@ module.exports = class Room {
     }
 
     getBestNodes (size = this.getSize()) {
-        var n = Math.log(size);
+        var n = Math.ceil(Math.log2(size))
         console.log(n);
         var best_node;
 
@@ -73,8 +73,6 @@ module.exports = class Room {
         var items = Object.keys(this.node_data).map(function(key) {
             return [key, data[key]];
         });
-
-        // console.log(items);
 
         items.sort(function(x, y) {
             if (x[1].getScore() > y[1].getScore()) {
