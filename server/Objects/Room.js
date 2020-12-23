@@ -139,6 +139,8 @@ module.exports = class Room {
     }
 
     getBestChild(node){
-        return this.node_data[node].maxScoreChild().getID();
+        var maxChild = this.node_data[node].maxScoreChild();
+        if (maxChild == -1) return -1;
+        else    return maxChild.getID();
     }
 }
