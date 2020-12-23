@@ -116,13 +116,22 @@ module.exports = class Room {
     findNextBestNode () {
         var max = -1;
         var maxNode = -1;
-        this.node_data.forEach(i => {
-            if (i.getParent().getID() == this.source_id)  continue;
-            if (max < i.getScore()) {
-                max = i.getScore();
-                maxNode = i.getID();
-            }
+
+        var data = this.node_data;
+
+        // Create items array
+        var items = Object.keys(this.node_data).map(function(key) {
+            return [key, data[key]];
         });
+
+        for (let i = 0; i < items.length; i++) {
+            const element = items[i];
+            if(element[1].getParent().getID() == this.source_id)    continue;
+            if (max < element[1].getScore()) {
+                max = element[1].getScore();
+                maxNode = element[1].getID();
+            }
+        }
 
         return maxNode;
     }
