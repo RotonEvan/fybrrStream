@@ -90,7 +90,8 @@ module.exports = class Node {
 
     setParent (node) {
         this.parent = node;
-        console.log(`${node.getID()} parent of ${this.node_id}`);
+
+        console.log(`${node} parent of ${this.node_id}`);
     }
 
     emptyAdjlist () {
