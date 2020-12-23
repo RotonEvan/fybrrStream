@@ -54,7 +54,7 @@ module.exports = class Room {
         this.node_data[node].getAdjList().forEach(i => {
             i.setParent(null);
         });
-        this.node_data[node].emptyAdjList();
+        // this.node_data[node].emptyAdjList();
         delete this.node_data[node];
     }
 
@@ -126,7 +126,7 @@ module.exports = class Room {
 
         for (let i = 0; i < items.length; i++) {
             const element = items[i];
-            if(element[1].getParent().getID() == this.source_id || element[1].getID() == this.source_id)    continue;
+            if(element[1].getID() == this.source_id || element[1].getParent().getID() == this.source_id)    continue;
             if (max < element[1].getScore()) {
                 max = element[1].getScore();
                 maxNode = element[1].getID();
