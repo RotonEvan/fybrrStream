@@ -122,6 +122,8 @@ var rooms = {} // Room Object Array
 
 wss.on("connection", function (ws) {
   //ws - websocket of one peer
+  ws.isAlive = true;
+  ws.on('pong', heartbeat);
 
   ws.on('message', async function(message) {
     // console.log(message);
@@ -294,3 +296,29 @@ wss.clients.forEach((client) => {
   }
 });
 }, 1000);
+
+function dummyFunction() {}
+
+function heartbeat() {
+  this.isAlive = true;
+}
+
+const interval = setInterval(function ping() {
+  Object.keys(rooms).forEach(function(room) {
+    var currRoom = rooms[room];
+    Object.keys(currRoom.node_data).forEach(function(peerID) {
+      var ws = currRoom.getWS(peerID);
+      if (ws.isAlive === false){
+        peerLeaving(node, currRoom);
+        currRoom.removeNode(node);
+        return ws.terminate();
+      } 
+      ws.isAlive = false;
+      ws.ping(dummyFunction);
+    });
+  });
+}, 3000);
+
+wss.on('close', function close() {
+  clearInterval(interval);
+});
