@@ -310,9 +310,9 @@ const interval = setInterval(function ping() {
       var ws = currRoom.getWS(peer_id);
       if (ws.isAlive === false){
         sendMessage('server', currRoom.getParentID(peer_id), 'CHILDLEFT', JSON.stringify({'child' : peer_id}), currRoom);
-        for (let i = 0; i < currRoom.getAdjListID(peer_id).length; i++) {
-          const element = currRoom.getAdjListID(peer_id)[i];
-          sendMessage('server', element, 'PARENTLEFT', JSON.stringify({'parent' : peer_id}), currRoom);
+        var adj_list = currRoom.getAdjListIDs(peer_id);
+        for (let i = 0; i < adj_list.length; i++) {
+          sendMessage('server', adj_list[i], 'PARENTLEFT', JSON.stringify({'parent' : peer_id}), currRoom);
         }
         peerLeaving(peer_id, currRoom);
         currRoom.removeNode(node);
