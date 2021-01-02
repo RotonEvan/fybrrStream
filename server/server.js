@@ -289,13 +289,13 @@ http.createServer(function (req, res) {
   res.end();
 }).listen(HTTP_PORT);
 
-setInterval(() => {
-wss.clients.forEach((client) => {
-  if (client.readyState === WebSocket.OPEN) {
-    client.send(JSON.stringify("1"));
-  }
-});
-}, 1000);
+// setInterval(() => {
+// wss.clients.forEach((client) => {
+//   if (client.readyState === WebSocket.OPEN) {
+//     client.send(JSON.stringify("1"));
+//   }
+// });
+// }, 1000);
 
 function dummyFunction() {}
 
@@ -306,10 +306,15 @@ function heartbeat() {
 const interval = setInterval(function ping() {
   Object.keys(rooms).forEach(function(room) {
     var currRoom = rooms[room];
-    Object.keys(currRoom.node_data).forEach(function(peerID) {
-      var ws = currRoom.getWS(peerID);
+    Object.keys(currRoom.node_data).forEach(function(peer_id) {
+      var ws = currRoom.getWS(peer_id);
       if (ws.isAlive === false){
-        peerLeaving(node, currRoom);
+        sendMessage('server', currRoom.getParentID(peer_id), 'CHILDLEFT', JSON.stringify({'child' : peer_id}), currRoom);
+        for (let i = 0; i < currRoom.getAdjListID(peer_id).length; i++) {
+          const element = currRoom.getAdjListID(peer_id)[i];
+          sendMessage('server', element, 'PARENTLEFT', JSON.stringify({'parent' : peer_id}), currRoom);
+        }
+        peerLeaving(peer_id, currRoom);
         currRoom.removeNode(node);
         return ws.terminate();
       } 

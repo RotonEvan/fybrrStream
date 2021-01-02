@@ -185,6 +185,18 @@ function messageHandler(message) {
         console.log(`received ice from peer : ${peer}`);
         peerConnections[peer].pc.addIceCandidate(new RTCIceCandidate(ice)).catch(errorHandler);
     }
+    else if (context == 'CHILDLEFT') {
+        var data = JSON.parse(signal.data);
+        var c = data.child;
+        peerConnections[c].pc.close();
+        delete peerConnections[c];
+    }
+    else if (context == 'PARENTLEFT') {
+        var data = JSON.parse(signal.data);
+        var p = data.parent;
+        peerConnections[p].pc.close();
+        delete peerConnections[p];
+    }
 }
 
 function setUpPeer(peer, initCall = false) {

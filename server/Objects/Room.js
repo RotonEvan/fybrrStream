@@ -143,4 +143,15 @@ module.exports = class Room {
         if (maxChild == -1) return -1;
         else    return maxChild.getID();
     }
+
+    getAdjListID(node) {
+        var list =  this.node_data[node].getAdjList();
+        var new_list = [];
+        for (let i = 0; i < list.length; i++) {
+            const element = list[i];
+            var ID = i.getID();
+            new_list.push(ID);
+        }
+        return new_list;
+    }
 }
