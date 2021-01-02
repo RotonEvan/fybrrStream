@@ -225,6 +225,10 @@ function gotRemoteStream(event, peer) {
     var vidElement = document.getElementById('localVideo');
     vidElement.srcObject = event.streams[0];
     localStream = event.streams[0];
+    if (parentConnection){
+        delete peerConnections[parentConnection];
+    }
+    parentConnection = peer;
 }
   
 function checkPeerDisconnect(event, peer) {
