@@ -123,6 +123,10 @@ function messageHandler(message) {
         console.log("Child of Source");
         var data = JSON.parse(signal.data);
         var peer = data.parent;
+        if (parentConnection){
+            delete peerConnections[parentConnection];
+        }
+        parentConnection = peer;
         // RTC Connection setup starts with CONNECT request - sender is Child, receiver is Parent
         sendMessage(uuid, peer, 'CONNECT', JSON.stringify({'roomID' : roomHash}));
     }
@@ -131,6 +135,10 @@ function messageHandler(message) {
         var data = JSON.parse(signal.data);
         var peer = data.parent;
         var minNodeID = data.child;
+        if (parentConnection){
+            delete peerConnections[parentConnection];
+        }
+        parentConnection = peer;
         // RTC Connection setup starts with CONNECT request - sender is Child, receiver is Parent
         sendMessage(uuid, peer, 'CONNECT', JSON.stringify({'roomID' : roomHash}));
         function checkLocalStream() {

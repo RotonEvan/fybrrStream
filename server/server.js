@@ -236,7 +236,7 @@ function peerLeaving (peer_id, room) {
     best_child_id = room.findNextBestNode();
     if (best_child_id != -1) {
       // sendSourceStream(best_child_id, room);
-      sendMessage('server', best_child_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : currRoom.getSourceID()}), room);
+      sendMessage('server', best_child_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : room.getSourceID()}), room);
       room.delinkNodes(best_child_id, room.getParentID(best_child_id));
       room.linkNodes(best_child_id);
     }
@@ -308,14 +308,14 @@ const interval = setInterval(function ping() {
     var currRoom = rooms[room];
     Object.keys(currRoom.node_data).forEach(function(peer_id) {
       var ws = currRoom.getWS(peer_id);
-      if (ws.isAlive === false){
+      if (ws.isAlive === false || ws.readyState !== WebSocket.OPEN){
         sendMessage('server', currRoom.getParentID(peer_id), 'CHILDLEFT', JSON.stringify({'child' : peer_id}), currRoom);
         var adj_list = currRoom.getAdjListIDs(peer_id);
         for (let i = 0; i < adj_list.length; i++) {
           sendMessage('server', adj_list[i], 'PARENTLEFT', JSON.stringify({'parent' : peer_id}), currRoom);
         }
         peerLeaving(peer_id, currRoom);
-        currRoom.removeNode(node);
+        currRoom.removeNode(peer_id);
         return ws.terminate();
       } 
       ws.isAlive = false;
