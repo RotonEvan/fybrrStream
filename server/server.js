@@ -297,7 +297,7 @@ http.createServer(function (req, res) {
 // });
 // }, 1000);
 
-function dummyFunction() {}
+const dummy = [1,2,3];
 
 function heartbeat() {
   this.isAlive = true;
@@ -319,7 +319,7 @@ const interval = setInterval(function ping() {
         return ws.terminate();
       } 
       ws.isAlive = false;
-      ws.ping(dummyFunction);
+      ws.ping(dummy);
     });
   });
 }, 3000);
