@@ -149,6 +149,10 @@ function messageHandler(message) {
         console.log(`Parent : ${peer}`);
         // RTC Connection setup starts with CONNECT request - sender is Child, receiver is Parent
         sendMessage(uuid, peer, 'CONNECT', JSON.stringify({'roomID' : roomHash}));
+        if (parentConnection){
+            delete peerConnections[parentConnection];
+        }
+        parentConnection = peer;
     }
     else if (context == 'CONNECT') {
         var peer = signal.from;
@@ -199,7 +203,7 @@ function messageHandler(message) {
     }
 }
 
-function setUpPeer(peer, initCall = false) {
+async function setUpPeer(peer, initCall = false) {
     peerConnections[peer] = { 'id': peer, 'pc': new RTCPeerConnection(peerConnectionConfig) };
     peerConnections[peer].pc.onicecandidate = event => gotIceCandidate(event, peer);
     peerConnections[peer].pc.ontrack = event => gotRemoteStream(event, peer);
@@ -207,15 +211,12 @@ function setUpPeer(peer, initCall = false) {
     
     if (initCall) {
         console.log('adding tracks');
-        localStream.getTracks().forEach(t => {
-            peerConnections[peer].pc.addTrack(t, localStream);
+        localStream.getTracks().forEach(async function(t) {
+            await peerConnections[peer].pc.addTrack(t, localStream);
         });
-        // peerConnections[peer].pc.addStream(localStream);
-    }
-  
-    if (initCall) {
         console.log(`call inititated: ${uuid} to ${peer}`);
         peerConnections[peer].pc.createOffer({iceRestart: true}).then(description => createdDescription(description, peer)).catch(errorHandler);
+        // peerConnections[peer].pc.addStream(localStream);
     }
 }
   
@@ -237,10 +238,10 @@ function gotRemoteStream(event, peer) {
     var vidElement = document.getElementById('localVideo');
     vidElement.srcObject = event.streams[0];
     localStream = event.streams[0];
-    if (parentConnection){
-        delete peerConnections[parentConnection];
-    }
-    parentConnection = peer;
+    // if (parentConnection){
+    //     delete peerConnections[parentConnection];
+    // }
+    // parentConnection = peer;
 }
   
 function checkPeerDisconnect(event, peer) {
