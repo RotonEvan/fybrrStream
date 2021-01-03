@@ -251,6 +251,7 @@ function sendSourceStream(peer_id, currRoom) {
 }
 
 function replaceSourceStream(peer_id, minNodeID, currRoom) {
+  sendMessage('server', currRoom.getSourceID(), 'CHILDLEFT', JSON.stringify({'child' : minNodeID}), currRoom);
   sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCEANDREPLACE', JSON.stringify({'parent' : currRoom.getSourceID(), 'child' : minNodeID}), currRoom);
   currRoom.linkNodes(peer_id);
   currRoom.delinkNodes(minNodeID);
@@ -266,6 +267,7 @@ function sendMessage (from, to, context, data, room) {
 
 function replaceParentStream(id, newPeer, oldPeer, currRoom){
   // sendMessage('server', id, 'REPLACE', JSON.stringify({'newPeer' : newPeer, 'oldPeer' : oldPeer}), room);
+  sendMessage('server', id, 'CHILDLEFT', JSON.stringify({'child' : oldPeer}), currRoom);
   sendMessage('server', newPeer, 'PARENT', JSON.stringify({'peer' : id}), currRoom);
   currRoom.delinkNodes(newPeer, oldPeer);
   currRoom.linkNodes(newPeer, id);
