@@ -274,9 +274,10 @@ setInterval(() => {
           for (const i of report.values()) {
             console.log(i);
             // console.log(i.type
-            if (i.type != 'inbound-rtp') {
+            if ((i.type != 'inbound-rtp') && (i.type != 'remote-inbound-rtp')) {
               continue;
             }
+            relevant_data['Type'] = i.type;
             console.log(i);
             if (i.kind === 'audio') {
               relevant_data['Audio'] = i;
