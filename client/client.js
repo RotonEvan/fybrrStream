@@ -241,6 +241,57 @@ function createdDescription(description, peer) {
         sendMessage(uuid, peer, 'SDP', JSON.stringify({'sdp' : peerConnections[peer].pc.localDescription, 'roomID' : roomHash}));
     }).catch(errorHandler);
 }
+
+var peerLogFileData = {};    // key : uuid, value : timestamped log object
+var logFlag = false;
+
+// peerLogFileData = 
+
+// roton-sak : [ 
+//   {t1 : {relevant_data}}
+//   {t2 : {...}}
+// ]
+
+// roton-prashant :
+//   t1 : {...}
+//   t2 : {...}
+
+setInterval(() => {
+  if (logFlag) {
+    var dt = new Date().getTime();
+    for (const uuid in peerConnections) {
+      if (Object.hasOwnProperty.call(peerConnections, uuid)) {
+        const element = peerConnections[uuid];
+        if (!(peerLogFileData[uuid])) {
+          peerLogFileData[uuid] = [];
+        }
+        // var sender = element.pc.getSenders()[0];
+        // logFlag = false;
+        element.pc.getStats().then(function (report) {
+          // console.log(report);
+          // console.log(report.values());
+          var relevant_data = {};
+          for (const i of report.values()) {
+            console.log(i);
+            // console.log(i.type);
+            if (i.type != 'inbound-rtp') {
+              continue;
+            }
+            console.log(i);
+            if (i.kind === 'audio') {
+              relevant_data['Audio'] = i;
+            } else if (i.kind === 'video') {
+              relevant_data['Video'] = i;
+            }
+            var data = {'timestamp' : dt, 'data' : relevant_data};
+            console.log(data);
+            peerLogFileData[uuid].push(data);
+          }
+        })
+      }
+    }
+  }
+}, 5000);
   
 function gotRemoteStream(event, peer) {
     var vidElement = document.getElementById('localVideo');
@@ -250,6 +301,10 @@ function gotRemoteStream(event, peer) {
     //     delete peerConnections[parentConnection];
     // }
     // parentConnection = peer;
+    
+    if (logFlag == false) {
+        logFlag = true;
+    }
 }
   
 function checkPeerDisconnect(event, peer) {
