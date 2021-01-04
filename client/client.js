@@ -39,7 +39,29 @@ var peerConnectionConfig = {
         // { 'urls': 'stun:stun.ideasip.com' },
         // { 'urls': 'stun:stun.rixtelecom.se' },
         // { 'urls': 'stun:stun.schlund.de' },
-        { 'urls': 'stun:stun.stunprotocol.org:3478' },
+        {
+            "url": "stun:global.stun.twilio.com:3478?transport=udp",
+            "urls": "stun:global.stun.twilio.com:3478?transport=udp"
+          },
+          {
+            "url": "turn:global.turn.twilio.com:3478?transport=udp",
+            "username": "5c152fb5d3d8d9204560125570e46269beff48a4ca86ded9a826eeda4d9d2a89",
+            "urls": "turn:global.turn.twilio.com:3478?transport=udp",
+            "credential": "fC21hAbwL7EpXQJp1UFDQyOuVEWVOgdoST4oIgDBj90="
+          },
+          {
+            "url": "turn:global.turn.twilio.com:3478?transport=tcp",
+            "username": "5c152fb5d3d8d9204560125570e46269beff48a4ca86ded9a826eeda4d9d2a89",
+            "urls": "turn:global.turn.twilio.com:3478?transport=tcp",
+            "credential": "fC21hAbwL7EpXQJp1UFDQyOuVEWVOgdoST4oIgDBj90="
+          },
+          {
+            "url": "turn:global.turn.twilio.com:443?transport=tcp",
+            "username": "5c152fb5d3d8d9204560125570e46269beff48a4ca86ded9a826eeda4d9d2a89",
+            "urls": "turn:global.turn.twilio.com:443?transport=tcp",
+            "credential": "fC21hAbwL7EpXQJp1UFDQyOuVEWVOgdoST4oIgDBj90="
+          },
+        { 'urls': 'stun:stun.stunprotocol.org:3478' }
         // { 'urls': 'stun:stun.voiparound.com' },
         // { 'urls': 'stun:stun.voipbuster.com' },
         // { 'urls': 'stun:stun.voipstunt.com' },
