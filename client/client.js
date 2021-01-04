@@ -273,7 +273,7 @@ setInterval(() => {
           var relevant_data = {};
           for (const i of report.values()) {
             console.log(i);
-            // console.log(i.type);
+            // console.log(i.type
             if (i.type != 'inbound-rtp') {
               continue;
             }
@@ -333,3 +333,20 @@ function errorHandler(error) {
 function sendMessage (from, to, context, data) {
     socketConnection.send(JSON.stringify({'from' : from, 'to' : to, 'context' : context, 'data' : data}));
 }
+
+function downloadFiles() {
+    logFlag = false;
+  
+    for (const uuid in peerLogFileData) {
+      if (Object.hasOwnProperty.call(peerLogFileData, uuid)) {
+        const element = peerLogFileData[uuid];
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(element));
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", "Peer-" + uuid + ".json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      }
+    }
+  }
