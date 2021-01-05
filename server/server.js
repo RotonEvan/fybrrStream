@@ -206,6 +206,13 @@ wss.on("connection", function (ws) {
       peerLeaving(node, currRoom);
       currRoom.removeNode(node);
     }
+    else if (signal.context == 'GETNODETIMESTAMPDATA' && signal.to == 'server'){
+      var data = JSON.parse(signal.data);
+      var room = data.roomID;
+      var currRoom = rooms[room];
+      console.log('Source is requesting for node timestamp data');
+      sendMessage('server', peer_id, 'NODETIMESTAMPDATA', JSON.stringify({'timestamp_data' : currRoom.getTimestampData()}), currRoom);
+    }
     else if(signal.to != 'server') {
       // message to be forwarded to a node
       // console.log(signal);
@@ -223,6 +230,10 @@ wss.on("connection", function (ws) {
 });
 
 function peerLeaving (peer_id, room) {
+  if (peer_id == room.getSourceID()){
+    return;
+  }
+
   var parent_id = room.getParentID(peer_id);
   var best_child_id = room.getBestChild(peer_id);
   
@@ -311,7 +322,10 @@ const interval = setInterval(function ping() {
     Object.keys(currRoom.node_data).forEach(function(peer_id) {
       var ws = currRoom.getWS(peer_id);
       if (ws.isAlive === false || ws.readyState !== WebSocket.OPEN){
-        sendMessage('server', currRoom.getParentID(peer_id), 'CHILDLEFT', JSON.stringify({'child' : peer_id}), currRoom);
+        // console.log(`${peer_id} - left`);
+        if (peer_id != currRoom.getSourceID()) {
+          sendMessage('server', currRoom.getParentID(peer_id), 'CHILDLEFT', JSON.stringify({'child' : peer_id}), currRoom);
+        }
         var adj_list = currRoom.getAdjListIDs(peer_id);
         for (let i = 0; i < adj_list.length; i++) {
           sendMessage('server', adj_list[i], 'PARENTLEFT', JSON.stringify({'parent' : peer_id}), currRoom);

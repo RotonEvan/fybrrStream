@@ -69,6 +69,21 @@ var peerConnectionConfig = {
     ]
 };
 
+var peerLogFileData = {};    // key : uuid, value : timestamped log object
+var logFlag = false;
+
+// peerLogFileData = 
+
+// roton-sak : [ 
+//   {t1 : {relevant_data}}
+//   {t2 : {...}}
+// ]
+
+// roton-prashant :
+//   t1 : {...}
+//   t2 : {...}
+
+
 function create_UUID(){
     var dt = new Date().getTime();
     var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -87,6 +102,7 @@ function init() {
 
     // calculate and set limit
     limit = prompt("Enter Limit: ");
+    slots = limit;
 
     // calculate and set score
     score = prompt("Enter Score: ");
@@ -110,6 +126,8 @@ function init() {
         offerToReceiveVideo: true
     };
 
+
+    peerLogFileData[uuid] = [{'joining_timestamp':new Date().getTime(), 'available_slots' : slots}];
     // setting up socket connection
     socketConnection = new WebSocket('wss://' + location.host);
     socketConnection.onmessage = messageHandler;
@@ -191,8 +209,11 @@ function messageHandler(message) {
             // Wait till localStream is set
             while (!(localStream)) {}
         });
+        if (!(peer in peerConnections)){
+            --slots;
+            peerLogFileData[uuid].push({'timestamp':new Date().getTime(),'Type':'child_added', 'available_slots' : slots, 'child_id':peer});
+        }
         setUpPeer(peer, true);
-
         // sending CONNECT_ACK response
         sendMessage(uuid, peer, 'CONNECT_ACK', JSON.stringify({'roomID' : roomHash}));
     }
@@ -224,12 +245,25 @@ function messageHandler(message) {
         var c = data.child;
         peerConnections[c].pc.close();
         delete peerConnections[c];
+        ++slots;
+        peerLogFileData[uuid].push({'timestamp':new Date().getTime(),'Type':'child_left', 'available_slots' : slots, 'child_id':c});
     }
     else if (context == 'PARENTLEFT') {
         var data = JSON.parse(signal.data);
         var p = data.parent;
         peerConnections[p].pc.close();
         delete peerConnections[p];
+    }
+    else if (context == 'NODETIMESTAMPDATA'){
+        console.log("Timestamp Data received");
+        var data = JSON.parse(signal.data);
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", "Peer-" + uuid + "_node_timestamp.json");
+        document.body.appendChild(downloadAnchorNode); // required for firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     }
 }
 
@@ -264,23 +298,10 @@ function createdDescription(description, peer) {
     }).catch(errorHandler);
 }
 
-var peerLogFileData = {};    // key : uuid, value : timestamped log object
-var logFlag = false;
-
-// peerLogFileData = 
-
-// roton-sak : [ 
-//   {t1 : {relevant_data}}
-//   {t2 : {...}}
-// ]
-
-// roton-prashant :
-//   t1 : {...}
-//   t2 : {...}
-
 setInterval(() => {
   if (logFlag) {
-    var dt = new Date().getTime();
+    var dt;
+    // dt = new Date().getTime();
     for (const uuid in peerConnections) {
       if (Object.hasOwnProperty.call(peerConnections, uuid)) {
         const element = peerConnections[uuid];
@@ -296,19 +317,33 @@ setInterval(() => {
           for (const i of report.values()) {
             console.log(i);
             // console.log(i.type
-            if ((i.type != 'inbound-rtp') && (i.type != 'remote-inbound-rtp')) {
-              continue;
+            if (i.type === 'inbound-rtp'){
+                // dt = i.timestamp;
+                if (i.kind === 'audio') {
+                    relevant_data['Audio'] = {'timestamp':i.timestamp, 'packetsReceived' : i.packetsReceived, 'packetsLost' : i.packetsLost};
+                } 
+                else if (i.kind === 'video') {
+                    relevant_data['Video'] = {'timestamp':i.timestamp, 'packetsReceived' : i.packetsReceived, 'packetsLost' : i.packetsLost};
+                }
+            }
+            else if (i.type === 'remote-inbound-rtp') {
+                // dt = i.timestamp;
+                if (i.kind === 'audio') {
+                    relevant_data['Audio'] = {'timestamp':i.timestamp, 'roundTripTime' : i.roundTripTime, 'jitter' : i.jitter};
+                } 
+                else if (i.kind === 'video') {
+                    relevant_data['Video'] = {'timestamp':i.timestamp, 'roundTripTime' : i.roundTripTime, 'jitter' : i.jitter};
+                }
+            }
+            else{
+                continue;
             }
             relevant_data['Type'] = i.type;
             console.log(i);
-            if (i.kind === 'audio') {
-              relevant_data['Audio'] = i;
-            } else if (i.kind === 'video') {
-              relevant_data['Video'] = i;
-            }
-            var data = {'timestamp' : dt, 'data' : relevant_data};
-            console.log(data);
-            peerLogFileData[uuid].push(data);
+            
+            // var data = {'timestamp' : dt, 'data' : relevant_data};
+            console.log(relevant_data);
+            peerLogFileData[uuid].push(relevant_data);
           }
         })
       }
@@ -326,6 +361,8 @@ function gotRemoteStream(event, peer) {
     // parentConnection = peer;
     
     if (logFlag == false) {
+        var media_timestamp = new Date().getTime();
+        peerLogFileData[uuid].push({'media_timestamp':media_timestamp});
         logFlag = true;
     }
 }
@@ -358,8 +395,9 @@ function sendMessage (from, to, context, data) {
 }
 
 function downloadFiles() {
-    logFlag = false;
-  
+    if (isSource){
+        sendMessage(uuid, 'server', "GETNODETIMESTAMPDATA", JSON.stringify({'roomID' : roomHash}));
+    }
     for (const uuid in peerLogFileData) {
       if (Object.hasOwnProperty.call(peerLogFileData, uuid)) {
         const element = peerLogFileData[uuid];

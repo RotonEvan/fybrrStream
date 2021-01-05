@@ -4,6 +4,7 @@ module.exports = class Room {
     constructor (room_id, source_id) {
         this.room_id = room_id;
         this.node_data = {};
+        this.timestamp_data = {};
         this.size = 0;
         this.source_id = source_id;
     }
@@ -24,10 +25,14 @@ module.exports = class Room {
         return this.node_data[node_id].getWebsocket();
     }
     
+    getTimestampData () {
+        return this.timestamp_data;
+    }
+
     addNode (id, score, limit, websocket) {
         this.node_data[id] = new Node(id, score, limit, websocket);
-        this.size++;
-
+        ++this.size;
+        this.timestamp_data[new Date().getTime()] = this.size;
         // return this.node_data[id];
     }
 
@@ -50,12 +55,16 @@ module.exports = class Room {
     }
 
     removeNode(node) {
-        this.delinkNodes(node, this.getParentID(node));
+        if (node != this.getSourceID()){
+            this.delinkNodes(node, this.getParentID(node));
+        }
         this.node_data[node].getAdjList().forEach(i => {
             i.setParent(null);
         });
         // this.node_data[node].emptyAdjList();
         delete this.node_data[node];
+        --this.size;
+        this.timestamp_data[new Date().getTime()] = this.size;
     }
 
     isNodeLimitNotReached(nodeID = this.source_id) {
@@ -63,8 +72,8 @@ module.exports = class Room {
     }
 
     getBestNodes (size = this.getSize()) {
-        var n = Math.ceil(Math.log2(size))
-        console.log(n);
+        // var n = Math.ceil(Math.log2(size))
+        // console.log(n);
         var best_node;
 
         var data = this.node_data;
