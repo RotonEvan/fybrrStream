@@ -43,24 +43,26 @@ var peerConnectionConfig = {
             "url": "stun:global.stun.twilio.com:3478?transport=udp",
             "urls": "stun:global.stun.twilio.com:3478?transport=udp"
           },
-//           {
+          {
 //             "url": "turn:global.turn.twilio.com:3478?transport=udp",
-//             "username": "4c25833b3b5abb4c9f98e34d591edf5e75ec97703113867a52f4f2d93dfbc087",
+            "urls": "turn:global.turn.twilio.com:3478",
+            "username": "4c25833b3b5abb4c9f98e34d591edf5e75ec97703113867a52f4f2d93dfbc087",
 //             "urls": "turn:global.turn.twilio.com:3478?transport=udp",
-//             "credential": "EUFiUeGErhXy6plXhbcMXmcgArgKo1/dR9H+za30dyg="
-//           },
+            "credential": "EUFiUeGErhXy6plXhbcMXmcgArgKo1/dR9H+za30dyg="
+          },
 //           {
 //             "url": "turn:global.turn.twilio.com:3478?transport=tcp",
 //             "username": "4c25833b3b5abb4c9f98e34d591edf5e75ec97703113867a52f4f2d93dfbc087",
 //             "urls": "turn:global.turn.twilio.com:3478?transport=tcp",
 //             "credential": "EUFiUeGErhXy6plXhbcMXmcgArgKo1/dR9H+za30dyg="
 //           },
-//           {
+          {
 //             "url": "turn:global.turn.twilio.com:443?transport=tcp",
-//             "username": "4c25833b3b5abb4c9f98e34d591edf5e75ec97703113867a52f4f2d93dfbc087",
+              "urls": "turn:global.turn.twilio.com:443",
+            "username": "4c25833b3b5abb4c9f98e34d591edf5e75ec97703113867a52f4f2d93dfbc087",
 //             "urls": "turn:global.turn.twilio.com:443?transport=tcp",
-//             "credential": "EUFiUeGErhXy6plXhbcMXmcgArgKo1/dR9H+za30dyg="
-//           },
+            "credential": "EUFiUeGErhXy6plXhbcMXmcgArgKo1/dR9H+za30dyg="
+          },
         { 'urls': 'stun:stun.stunprotocol.org:3478' }
         // { 'urls': 'stun:stun.voiparound.com' },
         // { 'urls': 'stun:stun.voipbuster.com' },
