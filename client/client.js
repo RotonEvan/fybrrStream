@@ -315,7 +315,7 @@ setInterval(() => {
           // console.log(report.values());
           var relevant_data = {};
           for (const i of report.values()) {
-            console.log(i);
+//             console.log(i);
             // console.log(i.type
             if (i.type === 'inbound-rtp'){
                 // dt = i.timestamp;
@@ -339,10 +339,10 @@ setInterval(() => {
                 continue;
             }
             relevant_data['Type'] = i.type;
-            console.log(i);
+//             console.log(i);
             
             // var data = {'timestamp' : dt, 'data' : relevant_data};
-            console.log(relevant_data);
+//             console.log(relevant_data);
             peerLogFileData[uuid].push(relevant_data);
           }
         })
