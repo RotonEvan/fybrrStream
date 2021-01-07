@@ -155,28 +155,8 @@ wss.on("connection", function (ws) {
 
       // Check if room is already present( with source node) in the rooms.
       if (currRoom) {
-        
-        // Check if source can serve some more direct children peers.
-        if (currRoom.isNodeLimitNotReached()) {
-          currRoom.addNode(peer_id, score, limit, ws);
-          sendSourceStream(peer_id, currRoom);
-        }
-        // Otherwise execute the JOINING Protocol
-        else {
-          var [minNodeID, minNodeLimit] = currRoom.findMin();
-
-          // Check if limit of new node is more than those peers which are directly connected to source
-          if (limit > minNodeLimit) {
-            currRoom.addNode(peer_id, score, limit, ws);
-            replaceSourceStream(peer_id, minNodeID, currRoom);
-          }
-          else {
-            var bestpeer = currRoom.getBestNodes();
-            currRoom.addNode(peer_id, score, limit, ws);
-            sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}), currRoom);
-            currRoom.linkNodes(peer_id, bestpeer);
-          }
-        }
+        currRoom.addNode(peer_id, score, limit, ws);
+        peerJoining(currRoom, peer_id);
       }
       // this node is source node; room needs to be created
       else {
@@ -229,6 +209,28 @@ wss.on("connection", function (ws) {
   });
 });
 
+function peerJoining (currRoom, peer_id) {
+  
+  // Check if source can serve some more direct children peers.
+  if (currRoom.isNodeLimitNotReached()) {
+    sendSourceStream(peer_id, currRoom);
+  }
+  // Otherwise execute the JOINING Protocol
+  else {
+    var [minNodeID, minNodeLimit] = currRoom.findMin();
+
+    // Check if limit of new node is more than those peers which are directly connected to source
+    if (limit > minNodeLimit) {
+      replaceSourceStream(peer_id, minNodeID, currRoom);
+    }
+    else {
+      var bestpeer = currRoom.getBestNodes();
+      sendMessage('server', peer_id, 'PARENT', JSON.stringify({'peer' : bestpeer}), currRoom);
+      currRoom.linkNodes(peer_id, bestpeer);
+    }
+  }
+}
+
 function peerLeaving (peer_id, room) {
   if (peer_id == room.getSourceID()){
     return;
@@ -239,6 +241,13 @@ function peerLeaving (peer_id, room) {
   
   if (best_child_id != -1){
     replaceParentStream(parent_id, best_child_id, peer_id, room);
+    var adj_list = currRoom.getAdjListIDs(peer_id);
+    for (let i = 0; i < adj_list.length; i++) {
+      if (adj_list[i] != best_child_id) {
+//         currRoom.delinkNodes(adj_list[i], peer_id);
+        peerJoining(room, adj_list[i]);
+      }
+    }
     // sendMessage('server', best_child_id, 'PARENT', JSON.stringify({'peer' : parent_id}));
     // room.delinkNodes(best_child_id, peer_id);
     // room.linkNodes(best_child_id, parent_id);
@@ -333,6 +342,7 @@ const interval = setInterval(function ping() {
           }
           peerLeaving(peer_id, currRoom);
           currRoom.removeNode(peer_id);
+          
         }
         catch(err){
           console.log(err);
