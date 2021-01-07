@@ -156,7 +156,7 @@ wss.on("connection", function (ws) {
       // Check if room is already present( with source node) in the rooms.
       if (currRoom) {
         currRoom.addNode(peer_id, score, limit, ws);
-        peerJoining(currRoom, peer_id);
+        peerJoining(currRoom, peer_id, limit);
       }
       // this node is source node; room needs to be created
       else {
@@ -209,7 +209,7 @@ wss.on("connection", function (ws) {
   });
 });
 
-function peerJoining (currRoom, peer_id) {
+function peerJoining (currRoom, peer_id, limit) {
   
   // Check if source can serve some more direct children peers.
   if (currRoom.isNodeLimitNotReached()) {
