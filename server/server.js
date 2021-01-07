@@ -322,7 +322,7 @@ const interval = setInterval(function ping() {
     Object.keys(currRoom.node_data).forEach(function(peer_id) {
       var ws = currRoom.getWS(peer_id);
       if (ws.isAlive === false || ws.readyState !== WebSocket.OPEN){
-        // console.log(`${peer_id} - left`);
+        console.log(`${peer_id} - left`);
         try{
           if (peer_id != currRoom.getSourceID()) {
             sendMessage('server', currRoom.getParentID(peer_id), 'CHILDLEFT', JSON.stringify({'child' : peer_id}), currRoom);
