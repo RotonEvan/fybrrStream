@@ -245,16 +245,20 @@ function messageHandler(message) {
     else if (context == 'CHILDLEFT') {
         var data = JSON.parse(signal.data);
         var c = data.child;
-        peerConnections[c].pc.close();
-        delete peerConnections[c];
+        if (peerConnections[c]){
+            peerConnections[c].pc.close();
+            delete peerConnections[c];
+        }
         ++slots;
         peerLogFileData[uuid].push({'timestamp':new Date().getTime(),'Type':'child_left', 'available_slots' : slots, 'child_id':c});
     }
     else if (context == 'PARENTLEFT') {
         var data = JSON.parse(signal.data);
         var p = data.parent;
-        peerConnections[p].pc.close();
-        delete peerConnections[p];
+        if (peerConnections[p]){
+            peerConnections[p].pc.close();
+            delete peerConnections[p];
+        }
     }
     else if (context == 'NODETIMESTAMPDATA'){
         console.log("Timestamp Data received");
@@ -370,14 +374,16 @@ function gotRemoteStream(event, peer) {
 }
   
 function checkPeerDisconnect(event, peer) {
-    var state = peerConnections[peer].pc.iceConnectionState;
-    console.log(`connection with peer ${peer} ${state}`);
-    if (state === "failed" || state === "closed") {
-        sendMessage(uuid, 'server', "FAIL", JSON.stringify({'roomID' : roomHash, 'node' : peer}));
-        delete peerConnections[peer];
-        // document.getElementById('videos').removeChild(document.getElementById('remoteVideo_' + peer));
-        // updateLayout();
-    }
+    if (peerConnections[peer]){
+        var state = peerConnections[peer].pc.iceConnectionState;
+        console.log(`connection with peer ${peer} ${state}`);
+        if (state === "failed" || state === "closed") {
+            sendMessage(uuid, 'server', "FAIL", JSON.stringify({'roomID' : roomHash, 'node' : peer}));
+            delete peerConnections[peer];
+            // document.getElementById('videos').removeChild(document.getElementById('remoteVideo_' + peer));
+            // updateLayout();
+        }
+    } 
 }
 
 // Call this method when user clicks on the "Leave Meeting" button.
