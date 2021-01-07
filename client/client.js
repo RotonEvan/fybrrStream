@@ -360,9 +360,9 @@ setInterval(() => {
 function gotRemoteStream(event, peer) {
     var vidElement = document.getElementById('localVideo');
     vidElement.srcObject = event.streams[0];
-    
-    localStream.getVideoTracks()[0].stop();
-    
+    if (localStream) {
+        localStream.getVideoTracks()[0].stop();
+    }
     localStream = event.streams[0];
     
     for (var peer in peerConnections) {
