@@ -323,15 +323,20 @@ const interval = setInterval(function ping() {
       var ws = currRoom.getWS(peer_id);
       if (ws.isAlive === false || ws.readyState !== WebSocket.OPEN){
         // console.log(`${peer_id} - left`);
-        if (peer_id != currRoom.getSourceID()) {
-          sendMessage('server', currRoom.getParentID(peer_id), 'CHILDLEFT', JSON.stringify({'child' : peer_id}), currRoom);
+        try{
+          if (peer_id != currRoom.getSourceID()) {
+            sendMessage('server', currRoom.getParentID(peer_id), 'CHILDLEFT', JSON.stringify({'child' : peer_id}), currRoom);
+          }
+          var adj_list = currRoom.getAdjListIDs(peer_id);
+          for (let i = 0; i < adj_list.length; i++) {
+            sendMessage('server', adj_list[i], 'PARENTLEFT', JSON.stringify({'parent' : peer_id}), currRoom);
+          }
+          peerLeaving(peer_id, currRoom);
+          currRoom.removeNode(peer_id);
         }
-        var adj_list = currRoom.getAdjListIDs(peer_id);
-        for (let i = 0; i < adj_list.length; i++) {
-          sendMessage('server', adj_list[i], 'PARENTLEFT', JSON.stringify({'parent' : peer_id}), currRoom);
+        catch(err){
+          console.log(err);
         }
-        peerLeaving(peer_id, currRoom);
-        currRoom.removeNode(peer_id);
         return ws.terminate();
       } 
       ws.isAlive = false;
