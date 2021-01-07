@@ -360,7 +360,18 @@ setInterval(() => {
 function gotRemoteStream(event, peer) {
     var vidElement = document.getElementById('localVideo');
     vidElement.srcObject = event.streams[0];
+    
+    localStream.getVideoTracks()[0].stop();
+    
     localStream = event.streams[0];
+    
+    for (var peer in peerConnections) {
+        var sender = peerConnections[peer].pc.getSenders().find(function(s) {
+          return s.track.kind == localStream.getVideoTracks()[0].kind;
+        });
+        console.log("sender: " + sender);
+        sender.replaceTrack(localStream.getVideoTracks()[0]);
+    }
     // if (parentConnection){
     //     delete peerConnections[parentConnection];
     // }
