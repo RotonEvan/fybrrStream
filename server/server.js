@@ -273,9 +273,17 @@ function sendSourceStream(peer_id, currRoom) {
 function replaceSourceStream(peer_id, minNodeID, currRoom) {
   sendMessage('server', currRoom.getSourceID(), 'CHILDLEFT', JSON.stringify({'child' : minNodeID}), currRoom);
   sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCEANDREPLACE', JSON.stringify({'parent' : currRoom.getSourceID(), 'child' : minNodeID}), currRoom);
+  
   currRoom.linkNodes(peer_id);
   currRoom.delinkNodes(minNodeID);
   currRoom.linkNodes(minNodeID, peer_id);
+  
+  var adj_list = currRoom.getAdjListIDs(minNodeID);
+  for (let i = 0; i < adj_list.length; i++) {
+    currRoom.delinkNodes(adj_list[i], minNodeID);
+    sendMessage('server', adj_list[i], 'PARENT', JSON.stringify({'peer' : peer_id}), currRoom);
+    currRoom.linkNodes(adj_list[i], peer_id);
+  }
 }
 
 function sendMessage (from, to, context, data, room) {
