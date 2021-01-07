@@ -241,7 +241,7 @@ function peerLeaving (peer_id, room) {
   
   if (best_child_id != -1){
     replaceParentStream(parent_id, best_child_id, peer_id, room);
-    var adj_list = currRoom.getAdjListIDs(peer_id);
+    var adj_list = room.getAdjListIDs(peer_id);
     for (let i = 0; i < adj_list.length; i++) {
       if (adj_list[i] != best_child_id) {
 //         currRoom.delinkNodes(adj_list[i], peer_id);
