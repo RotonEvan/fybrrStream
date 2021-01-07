@@ -337,7 +337,9 @@ const interval = setInterval(function ping() {
         catch(err){
           console.log(err);
         }
-        return ws.terminate();
+        finally{
+          return ws.terminate();
+        }
       } 
       ws.isAlive = false;
       ws.ping(dummy);
