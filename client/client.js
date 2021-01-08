@@ -143,6 +143,10 @@ function messageHandler(message) {
     var signal = JSON.parse(message.data);
     var context = signal.context;
 
+    if (context != 'ICE' && context != 'SDP') {
+        console.log(signal);
+    }
+
     if (context == 'SOURCE') {
         isSource = true;
 
@@ -189,6 +193,7 @@ function messageHandler(message) {
             }
             else {
                 sendMessage(uuid, minNodeID, 'PARENT', JSON.stringify({'peer' : uuid, 'roomID' : roomHash}));
+                sendMessage(uuid, 'server', 'ADJLIST', JSON.stringify({'newparent' : uuid, 'roomID' : roomHash, 'oldparent' : minNodeID}))
             }
         }
         checkLocalStream();
@@ -364,6 +369,7 @@ function gotRemoteStream(event, peer) {
 //         localStream.getVideoTracks()[0].stop();
 //     }
     localStream = event.streams[0];
+    console.log(localStream);
     
 //     for (var peer in peerConnections) {
 //         var sender = peerConnections[peer].pc.getSenders().find(function(s) {
