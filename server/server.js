@@ -278,9 +278,9 @@ function replaceSourceStream(peer_id, minNodeID, currRoom) {
   currRoom.delinkNodes(minNodeID);
   currRoom.linkNodes(minNodeID, peer_id);
   
-  // setTimeout(function() {
-  //   //your code to be executed after 1 second
-  // }, 5000);
+  setTimeout(function() {
+    //your code to be executed after 1 second
+  }, 5000);
 
   var adj_list = currRoom.getAdjListIDs(minNodeID);
   for (let i = 0; i < adj_list.length; i++) {
