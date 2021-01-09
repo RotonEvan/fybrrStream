@@ -109,7 +109,7 @@ const handleRequest = function(request, response) {
 
 // setting up server
 
-const httpsServer = https.createServer(serverConfig, handleRequest);
+const httpsServer = http.createServer(serverConfig, handleRequest);
 httpsServer.listen(HTTPS_PORT);
 
 //setting up socket server
