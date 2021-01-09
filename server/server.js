@@ -109,7 +109,7 @@ const handleRequest = function(request, response) {
 
 // setting up server
 
-const httpsServer = http.createServer(serverConfig, handleRequest);
+const httpsServer = https.createServer(serverConfig, handleRequest);
 httpsServer.listen(HTTPS_PORT);
 
 //setting up socket server
@@ -364,14 +364,13 @@ const interval = setInterval(function ping() {
           for (let i = 0; i < adj_list.length; i++) {
             sendMessage('server', adj_list[i], 'PARENTLEFT', JSON.stringify({'parent' : peer_id}), currRoom);
           }
-          peerLeaving(peer_id, currRoom);
-          currRoom.removeNode(peer_id);
-          
         }
         catch(err){
           console.log(err);
         }
         finally{
+          peerLeaving(peer_id, currRoom);
+          currRoom.removeNode(peer_id);
           return ws.terminate();
         }
       } 
