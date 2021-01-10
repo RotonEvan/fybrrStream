@@ -260,6 +260,13 @@ function peerLeaving (peer_id, room) {
       sendMessage('server', best_child_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : room.getSourceID()}), room);
       room.delinkNodes(best_child_id, room.getParentID(best_child_id));
       room.linkNodes(best_child_id);
+      var adj_list = room.getAdjListIDs(peer_id);
+      for (let i = 0; i < adj_list.length; i++) {
+        if (adj_list[i] != best_child_id) {
+  //         currRoom.delinkNodes(adj_list[i], peer_id);
+          peerJoining(room, adj_list[i]);
+        }
+      }
     }
   }
   else if (best_child_id != -1){
