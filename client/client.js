@@ -380,9 +380,9 @@ function gotRemoteStream(event, peer) {
         }
         
     }
-    if (parentConnection){
-        delete peerConnections[parentConnection];
-    }
+    // if (parentConnection){
+    //     delete peerConnections[parentConnection];
+    // }
     parentConnection = peer;
     
     
