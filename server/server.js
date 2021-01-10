@@ -17,7 +17,7 @@ const serverConfig = {
 };
 
 const handleRequest = function(request, response) {
-  console.log("request received : " + request);
+  // console.log("request received : " + request);
 
   //TO-DO
   if (request.url === '/client.js') {
@@ -164,7 +164,7 @@ wss.on("connection", function (ws) {
         var newRoom = new Room(room, peer_id);
         rooms[room] = newRoom;
         newRoom.addNode(peer_id, score, limit, ws);
-        console.log(newRoom);
+        // console.log(newRoom);
         // inform node that it is source node
         sendMessage('server', peer_id, 'SOURCE', JSON.stringify({'room' : room}), newRoom);
       }
@@ -190,7 +190,7 @@ wss.on("connection", function (ws) {
       var data = JSON.parse(signal.data);
       var room = data.roomID;
       var currRoom = rooms[room];
-      console.log('Source is requesting for node timestamp data');
+      // console.log('Source is requesting for node timestamp data');
       sendMessage('server', peer_id, 'NODETIMESTAMPDATA', JSON.stringify({'timestamp_data' : currRoom.getTimestampData()}), currRoom);
     }
     else if (signal.context == 'ADJLIST') {
@@ -200,7 +200,7 @@ wss.on("connection", function (ws) {
       var newparent = data.newparent;
       var oldparent = data.oldparent;
       var adj_list = currRoom.getAdjListIDs(oldparent);
-      console.log(adj_list);
+      // console.log(adj_list);
       for (let i = 0; i < adj_list.length; i++) {
         currRoom.delinkNodes(adj_list[i], oldparent);
         sendMessage('server', adj_list[i], 'PARENT', JSON.stringify({'peer' : newparent}), currRoom);
@@ -209,7 +209,7 @@ wss.on("connection", function (ws) {
     }
     else if(signal.to != 'server') {
       // message to be forwarded to a node
-      console.log(signal);
+      // console.log(signal);
       receiver = signal.to;
       var data = JSON.parse(signal.data);
       // console.log(data);
@@ -302,11 +302,9 @@ function sendSourceStream(peer_id, currRoom) {
 function replaceSourceStream(peer_id, minNodeID, currRoom) {
   sendMessage('server', currRoom.getSourceID(), 'CHILDLEFT', JSON.stringify({'child' : minNodeID}), currRoom);
   sendMessage('server', peer_id, 'DIRECTCHILDOFSOURCEANDREPLACE', JSON.stringify({'parent' : currRoom.getSourceID(), 'child' : minNodeID}), currRoom);
-  console.log('Flag 1');
   currRoom.linkNodes(peer_id);
   currRoom.delinkNodes(minNodeID);
   currRoom.linkNodes(minNodeID, peer_id);
-  console.log('Flag 2');
   // var adj_list = currRoom.getAdjListIDs(minNodeID);
   // console.log(adj_list);
   // for (let i = 0; i < adj_list.length; i++) {
@@ -314,7 +312,6 @@ function replaceSourceStream(peer_id, minNodeID, currRoom) {
   //   sendMessage('server', adj_list[i], 'PARENT', JSON.stringify({'peer' : peer_id}), currRoom);
   //   currRoom.linkNodes(adj_list[i], peer_id);
   // }
-  console.log('Flag 3');
 }
 
 function sendMessage (from, to, context, data, room) {
