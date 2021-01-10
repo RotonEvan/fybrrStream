@@ -368,18 +368,23 @@ function gotRemoteStream(event, peer) {
 //     }
     localStream = event.streams[0];
     console.log(localStream);
+
+    if (peerConnections.length > 1) {
+        for (var peer in peerConnections) {
+            if (peer == parentConnection)   continue;
+            var sender = peerConnections[peer].pc.getSenders().find(function(s) {
+              return s.track.kind == localStream.getVideoTracks()[0].kind;
+            });
+            console.log("sender: " + sender);
+            sender.replaceTrack(localStream.getVideoTracks()[0]);
+        }
+        if (parentConnection){
+            delete peerConnections[parentConnection];
+        }
+        parentConnection = peer;
+    }
     
-//     for (var peer in peerConnections) {
-//         var sender = peerConnections[peer].pc.getSenders().find(function(s) {
-//           return s.track.kind == localStream.getVideoTracks()[0].kind;
-//         });
-//         console.log("sender: " + sender);
-//         sender.replaceTrack(localStream.getVideoTracks()[0]);
-//     }
-    // if (parentConnection){
-    //     delete peerConnections[parentConnection];
-    // }
-    // parentConnection = peer;
+    
     
     if (logFlag == false) {
         var media_timestamp = new Date().getTime();
