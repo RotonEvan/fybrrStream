@@ -55,6 +55,9 @@ module.exports = class Room {
     }
 
     removeNode(node) {
+        if (!(this.node_data[node])) {
+            return;
+        }
         if (node != this.getSourceID()){
             this.delinkNodes(node, this.getParentID(node));
         }
@@ -144,7 +147,8 @@ module.exports = class Room {
     }
     
     getParentID(node){
-        return this.node_data[node].getParent().getID();
+        if (this.node_data[node].getParent())   return this.node_data[node].getParent().getID();
+        else    return -1;
     }
 
     getBestChild(node){
