@@ -210,10 +210,10 @@ function messageHandler(message) {
     else if (context == 'CONNECT') {
         var peer = signal.from;
         console.log(`Connect request from Child : ${peer}`);
-        setInterval(() => {
+        // setInterval(() => {
             // Wait till localStream is set
             while (!(localStream)) {}
-        });
+        // });
         if (!(peer in peerConnections)){
             --slots;
             peerLogFileData[uuid].push({'timestamp':new Date().getTime(),'Type':'child_added', 'available_slots' : slots, 'child_id':peer});
@@ -370,6 +370,7 @@ function gotRemoteStream(event, peer) {
     console.log(localStream);
 
     if (peerConnections.length > 1) {
+        console.log("updating localstream for childpeers");
         for (var p in peerConnections) {
             if (p == parentConnection)   continue;
             var sender = peerConnections[p].pc.getSenders().find(function(s) {
