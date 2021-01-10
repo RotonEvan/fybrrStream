@@ -369,7 +369,7 @@ function gotRemoteStream(event, peer) {
     localStream = event.streams[0];
     console.log(localStream);
 
-    if (peerConnections.length > 1) {
+    if (Object.keys(peerConnections).length > 1) {
         console.log("updating localstream for childpeers");
         for (var p in peerConnections) {
             if (p == parentConnection)   continue;
