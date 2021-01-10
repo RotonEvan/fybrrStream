@@ -24,6 +24,15 @@ module.exports = class Room {
     getWS(node_id) {
         return this.node_data[node_id].getWebsocket();
     }
+
+    isPresent(node_id) {
+        if (this.node_data[node_id]) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     
     getTimestampData () {
         return this.timestamp_data;

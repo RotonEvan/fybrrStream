@@ -250,6 +250,10 @@ function peerLeaving (peer_id, room) {
     return;
   }
 
+  if (!(room.isPresent(peer_id))) {
+    return;
+  }
+
   var parent_id = room.getParentID(peer_id);
   var best_child_id = room.getBestChild(peer_id);
   
