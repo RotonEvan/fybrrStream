@@ -253,7 +253,16 @@ function peerLeaving (peer_id, room) {
   var parent_id = room.getParentID(peer_id);
   var best_child_id = room.getBestChild(peer_id);
   
-  if (best_child_id != -1){
+  if (parent_id == room.getSourceID()){
+    best_child_id = room.findNextBestNode();
+    if (best_child_id != -1) {
+      // sendSourceStream(best_child_id, room);
+      sendMessage('server', best_child_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : room.getSourceID()}), room);
+      room.delinkNodes(best_child_id, room.getParentID(best_child_id));
+      room.linkNodes(best_child_id);
+    }
+  }
+  else if (best_child_id != -1){
     replaceParentStream(parent_id, best_child_id, peer_id, room);
     var adj_list = room.getAdjListIDs(peer_id);
     for (let i = 0; i < adj_list.length; i++) {
@@ -265,15 +274,6 @@ function peerLeaving (peer_id, room) {
     // sendMessage('server', best_child_id, 'PARENT', JSON.stringify({'peer' : parent_id}));
     // room.delinkNodes(best_child_id, peer_id);
     // room.linkNodes(best_child_id, parent_id);
-  }
-  else if (parent_id == room.getSourceID()){
-    best_child_id = room.findNextBestNode();
-    if (best_child_id != -1) {
-      // sendSourceStream(best_child_id, room);
-      sendMessage('server', best_child_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : room.getSourceID()}), room);
-      room.delinkNodes(best_child_id, room.getParentID(best_child_id));
-      room.linkNodes(best_child_id);
-    }
   }
 }
 
