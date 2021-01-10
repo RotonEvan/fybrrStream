@@ -370,20 +370,20 @@ function gotRemoteStream(event, peer) {
     console.log(localStream);
 
     if (peerConnections.length > 1) {
-        for (var peer in peerConnections) {
-            if (peer == parentConnection)   continue;
-            var sender = peerConnections[peer].pc.getSenders().find(function(s) {
+        for (var p in peerConnections) {
+            if (p == parentConnection)   continue;
+            var sender = peerConnections[p].pc.getSenders().find(function(s) {
               return s.track.kind == localStream.getVideoTracks()[0].kind;
             });
             console.log("sender: " + sender);
             sender.replaceTrack(localStream.getVideoTracks()[0]);
         }
-        if (parentConnection){
-            delete peerConnections[parentConnection];
-        }
-        parentConnection = peer;
+        
     }
-    
+    if (parentConnection){
+        delete peerConnections[parentConnection];
+    }
+    parentConnection = peer;
     
     
     if (logFlag == false) {
