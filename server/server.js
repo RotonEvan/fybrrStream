@@ -264,9 +264,11 @@ function peerLeaving (peer_id, room) {
       sendMessage('server', best_child_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : room.getSourceID()}), room);
       // room.delinkNodes(peer_id);
       let best_child_parent = room.getParentID(best_child_id);
-      sendMessage('server', best_child_parent, 'CHILDLEFT', JSON.stringify({'child' : best_child_id}), room);
+      if (best_child_parent != peer_id){
+        sendMessage('server', best_child_parent, 'CHILDLEFT', JSON.stringify({'child' : best_child_id}), room);
+      }
       room.delinkNodes(best_child_id, best_child_parent);
-      
+
       var adj_list = room.getAdjListIDs(peer_id);
       room.removeNode(peer_id);
       room.linkNodes(best_child_id);
