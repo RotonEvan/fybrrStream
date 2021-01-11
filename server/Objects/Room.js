@@ -109,7 +109,7 @@ module.exports = class Room {
 
         for (let i = 0; i < items.length; i++) {
             const element = items[i];
-            if (element[1].getSlots() > 0) {
+            if (element[1].getSlots() > 0 && element[1].getParent()) {
                 best_node = element[1].getID();
                 break;
             }
