@@ -270,7 +270,7 @@ function peerLeaving (peer_id, room) {
       for (let i = 0; i < adj_list.length; i++) {
         if (adj_list[i] != best_child_id) {
           // room.delinkNodes(adj_list[i], peer_id);
-          peerJoining(room, adj_list[i], room.getLimitofNode(adj_list[i]));
+          peerJoining(room, adj_list[i], room.getLimitOfNode(adj_list[i]));
         }
       }
     }
