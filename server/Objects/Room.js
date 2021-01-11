@@ -25,6 +25,10 @@ module.exports = class Room {
         return this.node_data[node_id].getWebsocket();
     }
 
+    getLimitOfNode(node_id) {
+        return this.node_data[node_id].getLimit();
+    }
+
     isPresent(node_id) {
         if (this.node_data[node_id]) {
             return true;
