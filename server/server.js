@@ -224,7 +224,7 @@ wss.on("connection", function (ws) {
 });
 
 function peerJoining (currRoom, peer_id, limit) {
-  
+  console.log(`${peer_id} is willing to JOIN!`);
   // Check if source can serve some more direct children peers.
   if (currRoom.isNodeLimitNotReached()) {
     sendSourceStream(peer_id, currRoom);
@@ -263,7 +263,7 @@ function peerLeaving (peer_id, room) {
       // sendSourceStream(best_child_id, room);
       sendMessage('server', best_child_id, 'DIRECTCHILDOFSOURCE', JSON.stringify({'parent' : room.getSourceID()}), room);
       // room.delinkNodes(peer_id);
-      room.delinkNodes(best_child_id, peer_id);
+      // room.delinkNodes(best_child_id, peer_id);
       room.linkNodes(best_child_id);
       var adj_list = room.getAdjListIDs(peer_id);
       room.removeNode(peer_id);
