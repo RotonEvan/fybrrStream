@@ -46,8 +46,8 @@ var peerConnectionConfig = {
         {
 //             "url": "turn:global.turn.twilio.com:3478?transport=udp",
             "urls": "turn:global.turn.twilio.com:3478",
-            "username": "79b9a823b374f52194086dd8ec543ffc2e437b04790e494f5ff64029760aede2",
-            "credential": "eIZ2o5F26m9d+/S7v8f6qf/U3vF4UMQEGuIdg0u5Q3k="
+            "username": "b5739587f71d43b4074282fa448416b3dd38b0cd6fde818a59d43efe138c440e",
+            "credential": "kUkzUgZ+tefN2nNACeAWmyFgyLK9oLEEi+DhgsMC0fY="
         },
 //           {
 //             "url": "turn:global.turn.twilio.com:3478?transport=tcp",
@@ -58,8 +58,8 @@ var peerConnectionConfig = {
         {
 //             "url": "turn:global.turn.twilio.com:443?transport=tcp",
             "urls": "turn:global.turn.twilio.com:443",
-            "username": "79b9a823b374f52194086dd8ec543ffc2e437b04790e494f5ff64029760aede2",
-            "credential": "eIZ2o5F26m9d+/S7v8f6qf/U3vF4UMQEGuIdg0u5Q3k="
+            "username": "b5739587f71d43b4074282fa448416b3dd38b0cd6fde818a59d43efe138c440e",
+            "credential": "kUkzUgZ+tefN2nNACeAWmyFgyLK9oLEEi+DhgsMC0fY="
         },
         { 'urls': 'stun:stun.stunprotocol.org:3478' }
         // { 'urls': 'stun:stun.voiparound.com' },
@@ -95,17 +95,19 @@ function create_UUID(){
 }
 
 function init() {
-    displayName = prompt("Enter your name: ");
+    // displayName = prompt("Enter your name: ");
 
     // set UUID
-    uuid = displayName + create_UUID();
+    uuid = create_UUID();
 
     // calculate and set limit
-    limit = prompt("Enter Limit: ");
+    // limit = prompt("Enter Limit: ");
+    limit = 2;
     slots = limit;
 
     // calculate and set score
-    score = prompt("Enter Score: ");
+    // score = prompt("Enter Score: ");
+    score = 4;
 
     constraints = {
         video: {
