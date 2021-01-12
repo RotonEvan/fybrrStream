@@ -427,9 +427,9 @@ function downloadFiles() {
     if (isSource){
         sendMessage(uuid, 'server', "GETNODETIMESTAMPDATA", JSON.stringify({'roomID' : roomHash}));
     }
-    for (const uuid in peerLogFileData) {
-      if (Object.hasOwnProperty.call(peerLogFileData, uuid)) {
-        const element = peerLogFileData[uuid];
+    // for (const uuid in peerLogFileData) {
+    //   if (Object.hasOwnProperty.call(peerLogFileData, uuid)) {
+        const element = peerLogFileData;
         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(element));
         var downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href",     dataStr);
@@ -437,6 +437,6 @@ function downloadFiles() {
         document.body.appendChild(downloadAnchorNode); // required for firefox
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
-      }
-    }
+    //   }
+    // }
   }
