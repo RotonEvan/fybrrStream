@@ -193,6 +193,10 @@ wss.on("connection", function (ws) {
       // console.log('Source is requesting for node timestamp data');
       sendMessage('server', peer_id, 'NODETIMESTAMPDATA', JSON.stringify({'timestamp_data' : currRoom.getTimestampData()}), currRoom);
     }
+    else if (signal.context == 'GRAPH' && signal.to == 'server') {
+      var room = data.roomID;
+      ws.send(JSON.stringify({'from' : 'server', 'to' : 'Client', 'context' : 'UPDATEDGRAPH', 'data' : rooms[room].getUpdatedGraph()}));
+    }
     else if (signal.context == 'ADJLIST') {
       var data = JSON.parse(signal.data);
       var room = data.roomID;
@@ -371,7 +375,7 @@ const interval = setInterval(function ping() {
     var currRoom = rooms[room];
     Object.keys(currRoom.node_data).forEach(function(peer_id) {
       var ws = currRoom.getWS(peer_id);
-      if (ws.isAlive === false || ws.readyState !== WebSocket.OPEN){
+      if (ws.isAlive === false || ws.readyState !== WebSocket.OPEN) {
         console.log(`${peer_id} - left`);
         try{
           if (peer_id != currRoom.getSourceID()) {
@@ -390,7 +394,7 @@ const interval = setInterval(function ping() {
           currRoom.removeNode(peer_id);
           return ws.terminate();
         }
-      } 
+      }
       ws.isAlive = false;
       ws.ping(dummy);
     });
