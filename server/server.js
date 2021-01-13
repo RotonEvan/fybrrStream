@@ -23,6 +23,9 @@ const handleRequest = function(request, response) {
   if (request.url === '/client.js') {
     response.writeHead(200, { 'Content-Type': 'application/javascript' });
     response.end(fs.readFileSync('client/client.js'));
+  } else if (request.url === '/admin.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/admin.js'));
   } else if (request.url === '/font-awesome.min.css') {
     response.writeHead(200, { 'Content-Type': 'text/css' });
     response.end(fs.readFileSync('client/font-awesome.min.css'));
@@ -101,6 +104,9 @@ const handleRequest = function(request, response) {
   } else if (request.url === '/room') {
     response.writeHead(200, { 'Content-Type': 'text/html' });
     response.end(fs.readFileSync('client/room.html'));
+  } else if (request.url === '/admin') {
+    response.writeHead(200, { 'Content-Type': 'text/html' });
+    response.end(fs.readFileSync('client/admin.html'));
   } else {
     response.writeHead(200, { 'Content-Type': 'text/html' });
     response.end(fs.readFileSync('client/index.html'));
