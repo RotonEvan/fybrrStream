@@ -5,6 +5,7 @@ module.exports = class Room {
         this.room_id = room_id;
         this.node_data = {};
         this.timestamp_data = {};
+        this.graph_data = {};
         this.size = 0;
         this.source_id = source_id;
     }
@@ -40,6 +41,31 @@ module.exports = class Room {
     
     getTimestampData () {
         return this.timestamp_data;
+    }
+
+    updateGraphData () {
+        this.graph_data = {};
+        var data = this.node_data;
+
+        // Create items array
+        var items = Object.keys(this.node_data).map(function(key) {
+            return [key, data[key]];
+        });
+
+        for (let i = 0; i < items.length; i++) {
+            const element = items[i];
+            var id = element[1].getID();
+
+            var list =  element[1].getAdjList();
+            var new_list = [];
+            for (let i = 0; i < list.length; i++) {
+                new_list.push(list[i].getID());
+            }
+
+            this.graph_data[id] = {'id' : id, 'adj_list' : new_list};
+        }
+
+        return this.graph_data;
     }
 
     addNode (id, score, limit, websocket) {
