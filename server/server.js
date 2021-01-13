@@ -26,6 +26,15 @@ const handleRequest = function(request, response) {
   } else if (request.url === '/admin.js') {
     response.writeHead(200, { 'Content-Type': 'application/javascript' });
     response.end(fs.readFileSync('client/admin.js'));
+  } else if (request.url === '/graffle.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/graffle.js'));
+  } else if (request.url === '/raphael.min.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/raphael.min.js'));
+  } else if (request.url === '/graph.js') {
+    response.writeHead(200, { 'Content-Type': 'application/javascript' });
+    response.end(fs.readFileSync('client/graph.js'));
   } else if (request.url === '/font-awesome.min.css') {
     response.writeHead(200, { 'Content-Type': 'text/css' });
     response.end(fs.readFileSync('client/font-awesome.min.css'));
@@ -200,8 +209,9 @@ wss.on("connection", function (ws) {
       sendMessage('server', peer_id, 'NODETIMESTAMPDATA', JSON.stringify({'timestamp_data' : currRoom.getTimestampData()}), currRoom);
     }
     else if (signal.context == 'GRAPH' && signal.to == 'server') {
+      var data = JSON.parse(signal.data);
       var room = data.roomID;
-      ws.send(JSON.stringify({'from' : 'server', 'to' : 'Client', 'context' : 'UPDATEDGRAPH', 'data' : rooms[room].getUpdatedGraph()}));
+      ws.send(JSON.stringify({'from' : 'server', 'to' : 'admin', 'context' : 'UPDATEDGRAPH', 'data' : rooms[room].getUpdatedGraph()}));
     }
     else if (signal.context == 'ADJLIST') {
       var data = JSON.parse(signal.data);
