@@ -43,7 +43,7 @@ module.exports = class Room {
         return this.timestamp_data;
     }
 
-    updateGraphData () {
+    getUpdatedGraph () {
         this.graph_data = {};
         var data = this.node_data;
 
@@ -56,13 +56,8 @@ module.exports = class Room {
             const element = items[i];
             var id = element[1].getID();
 
-            var list =  element[1].getAdjList();
-            var new_list = [];
-            for (let i = 0; i < list.length; i++) {
-                new_list.push(list[i].getID());
-            }
-
-            this.graph_data[id] = {'id' : id, 'adj_list' : new_list};
+            var list =  this.getAdjListIDs(id);
+            this.graph_data[id] = list;
         }
 
         return this.graph_data;

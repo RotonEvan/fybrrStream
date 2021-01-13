@@ -1,4 +1,4 @@
-const socketConnection;
+var socketConnection;
 var roomHash;
 var graph;
 
@@ -8,7 +8,10 @@ function init(){
 
     socketConnection = new WebSocket('wss://' + location.host);
     socketConnection.onmessage = messageHandler;
-     
+    
+    // socketConnection.on('close', function close() {
+    //     clearInterval(interval);
+    // });
 }
 
 function messageHandler(message) {
@@ -24,10 +27,6 @@ function messageHandler(message) {
 const interval = setInterval(function ping() {
     socketConnection.send(JSON.stringify({'from' : 'admin', 'to' : 'server', 'context' : 'GRAPH', 'roomID' : roomHash}));
 }, 3000);
-
-socketConnection.on('close', function close() {
-  clearInterval(interval);
-});
 
 
 function updateGraph(adj_list){
