@@ -96,19 +96,20 @@ function create_UUID(){
 }
 
 function init() {
-    displayName = prompt("Enter your name: ");
+    // displayName = prompt("Enter your name: ");
+    displayName = "R";
 
     // set UUID
     uuid = displayName + "_" + create_UUID();
 
     // calculate and set limit
-    limit = prompt("Enter Limit: ");
-    // limit = 2;
+    // limit = prompt("Enter Limit: ");
+    limit = 2;
     slots = limit;
 
     // calculate and set score
-    score = prompt("Enter Score: ");
-    // score = 4;
+    // score = prompt("Enter Score: ");
+    score = 4;
 
     constraints = {
         video: {
@@ -148,6 +149,7 @@ function messageHandler(message) {
 
     if (context == 'SOURCE') {
         isSource = true;
+        document.getElementById('audio').remove();
 
         // var ss_button = document.getElementById("btn-getDisplayMedia");
         // ss_button.classList.toggle('invisible');
@@ -157,14 +159,12 @@ function messageHandler(message) {
         if (navigator.mediaDevices.getUserMedia) {
             console.log("local video");
             navigator.mediaDevices.getUserMedia(constraints)
-              .then(stream => {
+            .then(stream => {
                 console.log("local stream");
                 localStream = stream;
-                localStream.getAudioTracks()[0].enabled = true;
                 document.getElementById('localVideo').srcObject = stream;
                 localVideo = document.getElementById('localVideo');
-                // localVideo.setAttribute('muted', '');
-              }).catch(errorHandler);
+            }).catch(errorHandler);
         }
         else {
             alert('Your browser does not support getUserMedia API');
@@ -288,7 +288,11 @@ function messageHandler(message) {
 async function setUpPeer(peer, initCall = false) {
     peerConnections[peer] = { 'id': peer, 'pc': new RTCPeerConnection(peerConnectionConfig) };
     peerConnections[peer].pc.onicecandidate = event => gotIceCandidate(event, peer);
-    peerConnections[peer].pc.ontrack = event => gotRemoteStream(event, peer);
+    peerConnections[peer].pc.ontrack = async (event) => {
+        await gotRemoteStream(event, peer);
+        // document.getElementById('localVideo').play();
+        // document.getElementById('localVideo').muted = false;
+    }
     peerConnections[peer].pc.oniceconnectionstatechange = event => checkPeerDisconnect(event, peer);
     
     if (initCall) {
@@ -372,12 +376,15 @@ setInterval(() => {
   }
 }, 5000);
   
-function gotRemoteStream(event, peer) {
+async function gotRemoteStream(event, peer) {
+    console.log("remote stream received");
     var ss_button = document.getElementById("btn-getDisplayMedia");
-    ss_button.classList.toggle('invisible');
+    ss_button.remove();
+
 
     var vidElement = document.getElementById('localVideo');
-    vidElement.removeAttribute('muted');
+    
+    // vidElement.removeAttribute('muted');
     vidElement.srcObject = event.streams[0];
 //     if (localStream) {
 //         localStream.getVideoTracks()[0].stop();
@@ -470,12 +477,16 @@ function downloadFiles() {
     video: {
         mandatory: {
           chromeMediaSource: 'desktop',
-          maxWidth: 1920,
-          maxHeight: 1080,
-          maxFrameRate: {ideal: 25},
-          minAspectRatio: 1.77,
-          // chromeMediaSourceId: chrome.desktopCapture.chooseDesktopMedia(),
-        }
+        //   maxWidth: 1920,
+        //   maxHeight: 1080,
+            width : {exact : 1920},
+            height : {exact : 1080},
+            maxFrameRate: {ideal: 60},
+            minAspectRatio: 1.77,
+            // chromeMediaSourceId: chrome.desktopCapture.chooseDesktopMedia(),
+        },
+        // width: { min: 1024, ideal: 1280, max: 1920 },
+        // height: { min: 576, ideal: 720, max: 1080 }
     },
     audio: true
   }
@@ -485,6 +496,8 @@ function downloadFiles() {
   
   function screenshare() {
       //this.disabled = true;
+
+      
   
       invokeGetDisplayMedia(function(screen) {
           addStreamStopListener(screen, function() {
@@ -562,8 +575,8 @@ function downloadFiles() {
   function invokeGetDisplayMedia(success, error) {
       var videoConstraints = {};
   
-          videoConstraints.width = 1280;
-          videoConstraints.height = 720;
+          videoConstraints.width = 1920;
+          videoConstraints.height = 1080;
   
       var displayMediaStreamConstraints = {
           video: videoConstraints,
@@ -629,12 +642,7 @@ function downloadFiles() {
   function toggleAudio() {
     document.getElementById('audio').classList.toggle('off');
     document.getElementById('audio').classList.toggle('on');
-    document.getElementById('audioStatus').classList.toggle('audioUnmute');
-    document.getElementById('audioStatus').classList.toggle('audioMute');
-    localStream.getAudioTracks()[0].enabled = !(localStream.getAudioTracks()[0].enabled);
-    localIsMute = !(localIsMute);
-    serverConnection.send(JSON.stringify({ 'displayName': localDisplayName, 'isMute': localIsMute, 'uuid': localUuid, 'room': roomHash, 'dest': 'all-audio-change' }));
-    console.log(localStream.getAudioTracks()[0].enabled);
+    document.getElementById('localVideo').muted = !(document.getElementById('localVideo').muted);
   };
   
   function toggleVideo() {
