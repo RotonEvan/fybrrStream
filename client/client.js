@@ -149,8 +149,10 @@ function messageHandler(message) {
     if (context == 'SOURCE') {
         isSource = true;
 
-        var ss_button = document.getElementById("btn-getDisplayMedia");
-        ss_button.classList.toggle('invisible');
+        // var ss_button = document.getElementById("btn-getDisplayMedia");
+        // ss_button.classList.toggle('invisible');
+        // localVideo = document.getElementById('localVideo');
+        // localVideo.setAttribute('muted', '');
 
         if (navigator.mediaDevices.getUserMedia) {
             console.log("local video");
@@ -161,13 +163,13 @@ function messageHandler(message) {
                 localStream.getAudioTracks()[0].enabled = true;
                 document.getElementById('localVideo').srcObject = stream;
                 localVideo = document.getElementById('localVideo');
-                localVideo.setAttribute('muted', '');
+                // localVideo.setAttribute('muted', '');
               }).catch(errorHandler);
         }
         else {
             alert('Your browser does not support getUserMedia API');
         }
-        console.log(localStream.getAudioTracks()[0].enabled);
+        // console.log(localStream.getAudioTracks()[0].enabled);
         
     }
     else if (context == 'DIRECTCHILDOFSOURCE') {
@@ -371,7 +373,11 @@ setInterval(() => {
 }, 5000);
   
 function gotRemoteStream(event, peer) {
+    var ss_button = document.getElementById("btn-getDisplayMedia");
+    ss_button.classList.toggle('invisible');
+
     var vidElement = document.getElementById('localVideo');
+    vidElement.removeAttribute('muted');
     vidElement.srcObject = event.streams[0];
 //     if (localStream) {
 //         localStream.getVideoTracks()[0].stop();
@@ -487,13 +493,19 @@ function downloadFiles() {
           });
           var video            = document.querySelector('video');
           video.srcObject = screen;
+
           localStream = screen;
           for (var peer in peerConnections) {
                 var sender = peerConnections[peer].pc.getSenders().find(function(s) {
                   return s.track.kind == localStream.getVideoTracks()[0].kind;
                 });
+                var senderAudio = peerConnections[peer].pc.getSenders().find(function(s) {
+                    return s.track.kind == localStream.getAudioTracks()[0].kind;
+                });
                 console.log("sender: " + sender);
-                sender.replaceTrack(screen.getVideoTracks()[0]);}
+                sender.replaceTrack(screen.getVideoTracks()[0]);
+                senderAudio.replaceTrack(screen.getAudioTracks()[0]);
+            }
       }, function(e) {
           //button.disabled = false;
   
