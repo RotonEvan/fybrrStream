@@ -162,7 +162,7 @@ body {
 }
 
 .invisible {
-  display: none;
+  display: none !important;
 }
 
 @media (min-width: 1025px) {

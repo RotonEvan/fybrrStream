@@ -161,6 +161,7 @@ function messageHandler(message) {
                 localStream.getAudioTracks()[0].enabled = true;
                 document.getElementById('localVideo').srcObject = stream;
                 localVideo = document.getElementById('localVideo');
+                localVideo.setAttribute('muted', '');
               }).catch(errorHandler);
         }
         else {
