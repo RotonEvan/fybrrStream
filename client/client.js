@@ -157,7 +157,7 @@ function messageHandler(message) {
               .then(stream => {
                 console.log("local stream");
                 localStream = stream;
-                // localStream.getAudioTracks()[0].enabled = false;
+                localStream.getAudioTracks()[0].enabled = true;
                 document.getElementById('localVideo').srcObject = stream;
                 localVideo = document.getElementById('localVideo');
               }).catch(errorHandler);
