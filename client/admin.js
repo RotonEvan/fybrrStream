@@ -1,6 +1,10 @@
+// var crypto = require('crypto');
+
 var socketConnection;
 var roomHash;
 var graph;
+var prev_hash = "xyz";
+var curr_hash;
 
 var height = 900;
 var width = 900;
@@ -23,8 +27,13 @@ function messageHandler(message) {
 
     if (context == 'UPDATEDGRAPH' && signal.to == 'admin'){
         var adj_list = signal.data;
-        console.log(adj_list);
-        updateGraph(adj_list);
+        
+        curr_hash = sha1(adj_list);
+
+        if (prev_hash != curr_hash){
+            prev_hash = curr_hash;
+            updateGraph(adj_list);
+        }
     }
 }
 
@@ -32,6 +41,9 @@ const interval = setInterval(function ping() {
     socketConnection.send(JSON.stringify({'from' : 'admin', 'to' : 'server', 'context' : 'GRAPH', 'data' : JSON.stringify({'roomID' : roomHash})}));
 }, 3000);
 
+function sha1(input){
+    return CryptoJS.SHA1(JSON.stringify(input)).toString();
+}
 
 function updateGraph(adj_list){
     document.getElementById('canvas').innerHTML = "";
