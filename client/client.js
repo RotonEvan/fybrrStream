@@ -157,7 +157,7 @@ function messageHandler(message) {
               .then(stream => {
                 console.log("local stream");
                 localStream = stream;
-                localStream.getAudioTracks()[0].enabled = false;
+                // localStream.getAudioTracks()[0].enabled = false;
                 document.getElementById('localVideo').srcObject = stream;
                 localVideo = document.getElementById('localVideo');
               }).catch(errorHandler);
@@ -165,6 +165,7 @@ function messageHandler(message) {
         else {
             alert('Your browser does not support getUserMedia API');
         }
+        
     }
     else if (context == 'DIRECTCHILDOFSOURCE') {
         console.log("Child of Source");
@@ -450,4 +451,231 @@ function downloadFiles() {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  }
+
+
+
+
+
+  var displayMediaStreamConstraints = {
+    video: {
+        mandatory: {
+          chromeMediaSource: 'desktop',
+          maxWidth: 1920,
+          maxHeight: 1080,
+          maxFrameRate: {ideal: 25},
+          minAspectRatio: 1.77,
+          // chromeMediaSourceId: chrome.desktopCapture.chooseDesktopMedia(),
+        }
+    },
+    audio: true
+  }
+  
+  
+  var button           = document.querySelector('#btn-test-getDisplayMedia');
+  
+  function screenshare() {
+      //this.disabled = true;
+  
+      invokeGetDisplayMedia(function(screen) {
+          addStreamStopListener(screen, function() {
+              //location.reload();
+              reReplaceVideo();
+          });
+          var video            = document.querySelector('video');
+          video.srcObject = screen;
+          for (var peer in peerConnections) {
+                var sender = peerConnections[peer].pc.getSenders().find(function(s) {
+                  return s.track.kind == localStream.getVideoTracks()[0].kind;
+                });
+                console.log("sender: " + sender);
+                sender.replaceTrack(screen.getVideoTracks()[0]);}
+      }, function(e) {
+          //button.disabled = false;
+  
+          var error = {
+              name: e.name || 'UnKnown',
+              message: e.message || 'UnKnown',
+              stack: e.stack || 'UnKnown'
+          };
+  
+          if(error.name === 'PermissionDeniedError') {
+              if(location.protocol !== 'https:') {
+                  error.message = 'Please use HTTPs.';
+                  error.stack   = 'HTTPs is required.';
+              }
+          }
+  
+          console.error(error.name);
+          console.error(error.message);
+          console.error(error.stack);
+  
+          alert('Unable to capture your screen.\n\n' + error.name + '\n\n' + error.message + '\n\n' + error.stack);
+      });
+  
+  
+    if(!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
+        var error = 'Your browser does NOT supports getDisplayMedia API.';
+        document.querySelector('h1').innerHTML = error;
+        document.querySelector('h1').style.color = 'red';
+  
+        document.querySelector('video').style.display = 'none';
+        button.style.display = 'none';
+        throw new Error(error);
+    }
+  
+  };
+  function reReplaceVideo(){
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(stream => {
+      console.log("local stream");
+      localStream = stream;
+      for (var peer in peerConnections) {
+            var sender = peerConnections[peer].pc.getSenders().find(function(s) {
+              return s.track.kind == localStream.getVideoTracks()[0].kind;
+            });
+            console.log("sender: " + sender);
+            sender.replaceTrack(localStream.getVideoTracks()[0]);}
+  
+      console.log("stream updated");
+      localVideo.srcObject = stream;
+      localVideo.play();
+    }).catch(errorHandler);
+  
+  };
+  function invokeGetDisplayMedia(success, error) {
+      var videoConstraints = {};
+  
+          videoConstraints.width = 1280;
+          videoConstraints.height = 720;
+  
+      var displayMediaStreamConstraints = {
+          video: videoConstraints,
+          audio: true
+      };
+  
+      if(navigator.mediaDevices.getDisplayMedia) {
+          navigator.mediaDevices.getDisplayMedia(displayMediaStreamConstraints).then(success).catch(error);
+      }
+      else {
+          navigator.getDisplayMedia(displayMediaStreamConstraints).then(success).catch(error);
+      }
+  
+  }
+  
+  function addStreamStopListener(stream, callback) {
+      stream.addEventListener('ended', function() {
+          callback();
+          callback = function() {};
+      }, false);
+      stream.addEventListener('inactive', function() {
+          callback();
+          callback = function() {};
+      }, false);
+      stream.getTracks().forEach(function(track) {
+          track.addEventListener('ended', function() {
+              callback();
+              callback = function() {};
+          }, false);
+          track.addEventListener('inactive', function() {
+              callback();
+              callback = function() {};
+          }, false);
+      });
+  }
+  // screenshare-end   
+
+  function makeLabel(label) {
+    var vidLabel = document.createElement('div');
+    vidLabel.appendChild(document.createTextNode(label));
+    vidLabel.setAttribute('class', 'videoLabel');
+    return vidLabel;
+  }
+  
+  function makeAudioLabel(label) {
+    var vidLabel = document.createElement('div');
+    var icon = document.createElement('i');
+    icon.setAttribute('class', 'fa fa-microphone-slash');
+    icon.setAttribute('aria-hidden', 'true');
+    vidLabel.appendChild(icon);
+    if (!label) {vidLabel.setAttribute('class', 'audioUnmute');}
+    else  {vidLabel.setAttribute('class', 'audioMute');};
+    vidLabel.setAttribute('id', 'audioStatus');
+    return vidLabel;
+  }
+  
+  function changeAudioLabel(peerUuid) {
+    var vidElement = document.getElementById('remoteVideo_'+peerUuid).children[2];
+    vidElement.classList.toggle('audioUnmute');
+    vidElement.classList.toggle('audioMute');
+  }
+
+  function toggleAudio() {
+    document.getElementById('audio').classList.toggle('off');
+    document.getElementById('audio').classList.toggle('on');
+    document.getElementById('audioStatus').classList.toggle('audioUnmute');
+    document.getElementById('audioStatus').classList.toggle('audioMute');
+    localStream.getAudioTracks()[0].enabled = !(localStream.getAudioTracks()[0].enabled);
+    localIsMute = !(localIsMute);
+    serverConnection.send(JSON.stringify({ 'displayName': localDisplayName, 'isMute': localIsMute, 'uuid': localUuid, 'room': roomHash, 'dest': 'all-audio-change' }));
+    console.log(localStream.getAudioTracks()[0].enabled);
+  };
+  
+  function toggleVideo() {
+    document.getElementById('video').classList.toggle('off');
+    document.getElementById('video').classList.toggle('on');
+    localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
+    console.log(localStream.getVideoTracks()[0].enabled);
+  };
+
+  function toggleCamera() {
+    localVideo.pause();
+    localVideo.srcObject = null;
+    if( localStream == null ) return;
+    // we need to flip, stop everything
+    // localStream.getTracks().forEach(t => {
+    //   t.stop();
+    // });
+    localStream.getVideoTracks()[0].stop();
+    frontCam = !(frontCam);
+    flip();
+  }
+  
+  function flip() {
+    if (frontCam) {
+      constraints.video = {
+        width: {ideal: 320},
+        height: {ideal: 240},
+        frameRate: {ideal: 20}
+      };
+    } else {
+      constraints.video = {
+        width: {ideal: 320},
+        height: {ideal: 240},
+        frameRate: {ideal: 20},
+        facingMode: "environment"
+      };
+    }
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then(stream => {
+          console.log("local stream");
+          localStream = stream;
+          for (var peer in peerConnections) {
+            localStream.getTracks().forEach(t => {
+              peerConnections[peer].pc.addTrack(t, localStream);
+            });
+            console.log("sender: " + sender);
+            sender.replaceTrack(videoTrack);
+            sender.replaceTrack(audioTrack);
+          }
+          console.log("stream updated");
+          localVideo.srcObject = stream;
+          localVideo.play();
+        }).catch(errorHandler);
+  }
+  
+  function leaveRoom() {
+    if (confirm("Leave meeting?")) {
+      window.location = "https://fybrrstream.herokuapp.com";
+    }
   }

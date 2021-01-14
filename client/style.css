@@ -19,12 +19,12 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(var(--colWidth), 1fr)) ;
 }
 
-#localVideo
+/* #localVideo
 {
     transform: rotateY(180deg);
-    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
-    -moz-transform:rotateY(180deg); /* Firefox */
-}
+    -webkit-transform:rotateY(180deg); Safari and Chrome
+    -moz-transform:rotateY(180deg); Firefox
+} */
 /* .videoContainer {
     position: relative;
     overflow: hidden;
