@@ -124,9 +124,7 @@ function init() {
             googEchoCancellation2: true,
             googAutoGainControl2: true,
             googNoiseSuppression2: true
-        },
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: true
+        }
     };
 
 
@@ -151,8 +149,12 @@ function messageHandler(message) {
     if (context == 'SOURCE') {
         isSource = true;
 
+        var ss_button = document.getElementById("btn-getDisplayMedia");
+        ss_button.classList.toggle('invisible');
+
         if (navigator.mediaDevices.getUserMedia) {
             console.log("local video");
+            console.log(localStream.getAudioTracks()[0].enabled);
             navigator.mediaDevices.getUserMedia(constraints)
               .then(stream => {
                 console.log("local stream");
@@ -165,6 +167,7 @@ function messageHandler(message) {
         else {
             alert('Your browser does not support getUserMedia API');
         }
+        console.log(localStream.getAudioTracks()[0].enabled);
         
     }
     else if (context == 'DIRECTCHILDOFSOURCE') {
@@ -484,6 +487,7 @@ function downloadFiles() {
           });
           var video            = document.querySelector('video');
           video.srcObject = screen;
+          localStream = screen;
           for (var peer in peerConnections) {
                 var sender = peerConnections[peer].pc.getSenders().find(function(s) {
                   return s.track.kind == localStream.getVideoTracks()[0].kind;

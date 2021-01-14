@@ -161,6 +161,10 @@ body {
     background: #e43538;
 }
 
+.invisible {
+  display: none;
+}
+
 @media (min-width: 1025px) {
     .flip {
         display: none !important;
