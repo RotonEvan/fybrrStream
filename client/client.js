@@ -96,19 +96,19 @@ function create_UUID(){
 }
 
 function init() {
-    // displayName = prompt("Enter your name: ");
+    displayName = prompt("Enter your name: ");
 
     // set UUID
-    uuid = create_UUID();
+    uuid = displayName + "_" + create_UUID();
 
     // calculate and set limit
-    // limit = prompt("Enter Limit: ");
-    limit = 2;
+    limit = prompt("Enter Limit: ");
+    // limit = 2;
     slots = limit;
 
     // calculate and set score
-    // score = prompt("Enter Score: ");
-    score = 4;
+    score = prompt("Enter Score: ");
+    // score = 4;
 
     constraints = {
         video: {
