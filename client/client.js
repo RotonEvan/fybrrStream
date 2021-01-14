@@ -154,7 +154,6 @@ function messageHandler(message) {
 
         if (navigator.mediaDevices.getUserMedia) {
             console.log("local video");
-            console.log(localStream.getAudioTracks()[0].enabled);
             navigator.mediaDevices.getUserMedia(constraints)
               .then(stream => {
                 console.log("local stream");
