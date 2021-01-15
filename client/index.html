@@ -39,13 +39,22 @@
 <div class="row">
 <div class="col-md-5">
 <h1 class="promo-title font-libre" style="font-family: 'Righteous', cursive !important;">fybrrStream</h1>
-<a href="./room" class="button4 meetbutton">Start New Meeting</a><br><span style="margin: 25px 10px 15px 80px;display:inline-block;">&nbsp&nbsp&nbsp&nbsp OR &nbsp&nbsp</span><br>
-<input type="text" class="meetinput" id="hash" placeholder="Enter Meet Code"></input><button type="submit" onclick="meetHash(document.getElementById('hash').value);">Join</button>
+<a data-toggle="modal" data-target="#myModal" class="button4 meetbutton">Start New Meeting</a><br><span style="margin: 25px 10px 15px 80px;display:inline-block;">&nbsp&nbsp&nbsp&nbsp OR &nbsp&nbsp</span><br>
+<input type="text" class="meetinput" id="hash" placeholder="Enter Meet Code"></input><button data-toggle="modal" data-target="#myModal" type="submit">Join</button>
   <script type="text/javascript">
-    function meetHash(meetHashCode)
-    {
-      //location.hash = meetHashCode;
-      window.location.href = "./room\#"+meetHashCode;
+    if (location.hash) {
+      document.getElementById('hash').value = location.hash.substring(1);
+    }
+    function joinMeet(){
+      let hash;
+      if (document.getElementById('hash').value != "") {
+        hash = document.getElementById('hash').value;
+      }
+      else{
+        hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+      }
+      window.location.href='./room\#hash=' + hash + '&name='+ document.getElementById('inputName').value+'&limit='+document.getElementById('inputLimit').value+'&score='+document.getElementById('inputScore').value;
+      // window.location.reload();
     }
   </script>
 <div class="promo-title-sub" style="margin: 65px 0px 0px 0px;font-family: 'Righteous', cursive !important;">Secure & Decentralized & FREE</div>
@@ -155,6 +164,42 @@
 <div class="copyright">&copy;&nbsp; 2020 fybrrChat.<br /> all rights reserved</div>
 </div>
 </div>
+</div>
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Fill this form to join!</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+                <div class="form-group">
+                  <label>First Name</label>
+                    <input type="text" class="form-control rounded border w-100" id="inputName" placeholder="First Name">
+              </div>
+          
+              <div class="form-group">
+                  <label>Limit</label>
+                  <input type="number" class="form-control" id="inputLimit" placeholder="Limit">
+              </div>
+          
+              <div class="form-group">
+                  <label>Score</label>
+                  <input type="number" class="form-control" id="inputScore" placeholder="Score">
+              </div>
+              
+              <div class="form-group">
+                  <div class="row justify-content-center">
+                    <button type="submit" class="btn btn-primary rounded-pill w-25" onclick="joinMeet()">JOIN</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+  </div>
 </div>
 <script src="../../../../code.jquery.com/jquery-1.12.4.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>

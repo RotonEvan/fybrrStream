@@ -1,8 +1,10 @@
 // Generate random room name if needed
-if (!location.hash) {
-    location.hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-}
-const roomHash = location.hash.substring(1);
+// if (!location.hash) {
+//     location.hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+// }
+const hashParm = location.hash.substring(1).split('&');
+console.log(hashParm);
+const roomHash = hashParm[0].split('=')[1];
 
 // variable initializations
 
@@ -96,19 +98,21 @@ function create_UUID(){
 }
 
 function init() {
-    displayName = prompt("Enter your name: ");
+    // displayName = prompt("Enter your name: ");
     // displayName = "R";
-
+    // var urlParams = new URLSearchParams(window.location.hash);
+    // console.log(window.location);
+    displayName = hashParm[1].split('=')[1] || prompt('Enter your name', '');
     // set UUID
     uuid = displayName + "_" + create_UUID();
 
     // calculate and set limit
-    limit = prompt("Enter Limit: ");
+    limit = hashParm[2].split('=')[1] || prompt('Enter Limit', '');
     // limit = 2;
     slots = limit;
 
     // calculate and set score
-    score = prompt("Enter Score: ");
+    score = hashParm[3].split('=')[1] || prompt('Enter Score', '');
     // score = 4;
 
     constraints = {

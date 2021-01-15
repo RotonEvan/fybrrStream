@@ -6,7 +6,8 @@
   <link rel="icon" href="data:,">
 
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  <script src="https://kit.fontawesome.com/2b115a4883.js" crossorigin="anonymous"></script>
   <meta charset="UTF-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,8 +26,8 @@
       <a href="./index.html">fybrrStream</a>
     </div>
     <div class="navbar-right">
-      <a onclick="downloadFiles()" title="Download Log File(s)"><i class="fa fa-download fa-lg" style="color:green" aria-hidden="true"></i></a>
-      <a onclick="copyLink()" class="copy-button" title="Copy meeting link">Copy meeting link  <i class="fa fa-copy"></i></a>
+      <a onclick="downloadFiles()" title="Download Log File(s)"><i class="fas fa-download fa-lg" style="color:green" aria-hidden="true"></i></a>
+      <a onclick="copyLink()" class="copy-button" title="Copy meeting link">Copy meeting link  <i class="fas fa-copy"></i></a>
     </div>
   </nav>
   <br><br><br>
@@ -47,12 +48,12 @@
   </script> -->
 
   <div class="buttons">
-    <a id="audio" class="audio on audioMute" onclick="toggleAudio()" title="Toggle Microphone"><i class="fa fa-volume-mute" aria-hidden="true"></i></a>
+    <a id="audio" class="audio on audioMute" onclick="toggleAudio()" title="Toggle Microphone"><i class="fas fa-volume-mute" aria-hidden="true"></i></a>
     <!-- <a id="video" class="video off" onclick="toggleVideo()" title="Toggle Webcam"><i class="fa fa-video-camera" aria-hidden="true"></i></a> -->
-    <a id="btn-getDisplayMedia" class="screenshare off" onclick="screenshare()" title="Toggle Screenshare"><i class="fa fa-laptop" aria-hidden="true"></i></a>
+    <a id="btn-getDisplayMedia" class="screenshare off" onclick="screenshare()" title="Toggle Screenshare"><i class="fas fa-laptop" aria-hidden="true"></i></a>
     <!-- <a id="flip" class="flip" onclick="toggleCamera()"><i class="fa fa-refresh" aria-hidden="true"></i></a> -->
     <!-- <a id="screenshare" class="screenshare" onclick="toggleScreen()"></a> -->
-    <a id="leave" class="leave off" onclick="leaveRoom()" style="font-size: 26px;" title="Leave Room"><i class="fa fa-times" aria-hidden="true"></i></a>
+    <a id="leave" class="leave off" onclick="leaveRoom()" style="font-size: 26px;" title="Leave Room"><i class="fas fa-times" aria-hidden="true"></i></a>
   </div>
 
   
