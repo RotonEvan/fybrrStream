@@ -5,6 +5,14 @@
   width:auto;
   padding: 15px 45px 15px 45px;
   border-radius: 30px;
+  color: #0277BD !important; 
+  transition: .4s;
+}
+
+.meetbutton:hover{
+  background-color:#0277BD;
+  color: #ffffff !important; 
+  transition: .4s;
 }
 .meetinput{
 
