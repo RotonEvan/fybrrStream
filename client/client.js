@@ -481,7 +481,7 @@ function downloadFiles() {
         //   maxHeight: 1080,
             width : {exact : 1920},
             height : {exact : 1080},
-            maxFrameRate: {ideal: 60},
+            maxFrameRate: {min : 30, ideal : 45, max : 60},
             minAspectRatio: 1.77,
             // chromeMediaSourceId: chrome.desktopCapture.chooseDesktopMedia(),
         },
