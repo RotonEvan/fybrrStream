@@ -28,6 +28,8 @@ var peers = {};     // full mesh - peer IDs
 
 var constraints = {};
 
+var clientLogFileData = [];
+
 var peerConnectionConfig = {
     'iceServers': [
         { 'urls': 'stun:stun.l.google.com:19302' },
@@ -139,12 +141,12 @@ function init() {
 }
 
 function messageHandler(message) {
-    // console.log(message);
+    // logClient(message);
     var signal = JSON.parse(message.data);
     var context = signal.context;
 
     if (context != 'ICE' && context != 'SDP') {
-        console.log(signal);
+        logClient(signal);
     }
 
     if (context == 'SOURCE') {
@@ -157,10 +159,10 @@ function messageHandler(message) {
         // localVideo.setAttribute('muted', '');
 
         if (navigator.mediaDevices.getUserMedia) {
-            console.log("local video");
+            logClient("local video");
             navigator.mediaDevices.getUserMedia(constraints)
             .then(stream => {
-                console.log("local stream");
+                logClient("local stream");
                 localStream = stream;
                 document.getElementById('localVideo').srcObject = stream;
                 localVideo = document.getElementById('localVideo');
@@ -169,11 +171,11 @@ function messageHandler(message) {
         else {
             alert('Your browser does not support getUserMedia API');
         }
-        // console.log(localStream.getAudioTracks()[0].enabled);
+        // logClient(localStream.getAudioTracks()[0].enabled);
         
     }
     else if (context == 'DIRECTCHILDOFSOURCE') {
-        console.log("Child of Source");
+        logClient("Child of Source");
         var data = JSON.parse(signal.data);
         var peer = data.parent;
         if (parentConnection){
@@ -184,7 +186,7 @@ function messageHandler(message) {
         sendMessage(uuid, peer, 'CONNECT', JSON.stringify({'roomID' : roomHash}));
     }
     else if (context == 'DIRECTCHILDOFSOURCEANDREPLACE') {
-        console.log("Child of Source");
+        logClient("Child of Source");
         var data = JSON.parse(signal.data);
         var peer = data.parent;
         var minNodeID = data.child;
@@ -208,7 +210,7 @@ function messageHandler(message) {
     else if (context == 'PARENT') {
         var data = JSON.parse(signal.data);
         var peer = data.peer;
-        console.log(`Parent : ${peer}`);
+        logClient(`Parent : ${peer}`);
         // RTC Connection setup starts with CONNECT request - sender is Child, receiver is Parent
         sendMessage(uuid, peer, 'CONNECT', JSON.stringify({'roomID' : roomHash}));
         if (parentConnection){
@@ -218,7 +220,7 @@ function messageHandler(message) {
     }
     else if (context == 'CONNECT') {
         var peer = signal.from;
-        console.log(`Connect request from Child : ${peer}`);
+        logClient(`Connect request from Child : ${peer}`);
         // setInterval(() => {
             // Wait till localStream is set
             while (!(localStream)) {}
@@ -233,14 +235,14 @@ function messageHandler(message) {
     }
     else if (context == 'CONNECT_ACK') {
         var peer = signal.from;
-        console.log(`Connection ACK from parent : ${peer}`);
+        logClient(`Connection ACK from parent : ${peer}`);
         setUpPeer(peer);
     }
     else if (context == 'SDP') {
         var data = JSON.parse(signal.data);
         var sdp = data.sdp;
         var peer = signal.from;
-        console.log(`received sdp from peer : ${peer}`);
+        logClient(`received sdp from peer : ${peer}`);
         peerConnections[peer].pc.setRemoteDescription(new RTCSessionDescription(sdp)).then(function () {
             if (sdp.type == 'offer') {
                 peerConnections[peer].pc.createAnswer().then(description => createdDescription(description, peer)).catch(errorHandler);
@@ -251,7 +253,7 @@ function messageHandler(message) {
         var data = JSON.parse(signal.data);
         var ice = data.ice;
         var peer = signal.from;
-        console.log(`received ice from peer : ${peer}`);
+        logClient(`received ice from peer : ${peer}`);
         peerConnections[peer].pc.addIceCandidate(new RTCIceCandidate(ice)).catch(errorHandler);
     }
     else if (context == 'CHILDLEFT') {
@@ -273,7 +275,7 @@ function messageHandler(message) {
         }
     }
     else if (context == 'NODETIMESTAMPDATA'){
-        console.log("Timestamp Data received");
+        logClient("Timestamp Data received");
         var data = JSON.parse(signal.data);
         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
         var downloadAnchorNode = document.createElement('a');
@@ -288,33 +290,29 @@ function messageHandler(message) {
 async function setUpPeer(peer, initCall = false) {
     peerConnections[peer] = { 'id': peer, 'pc': new RTCPeerConnection(peerConnectionConfig) };
     peerConnections[peer].pc.onicecandidate = event => gotIceCandidate(event, peer);
-    peerConnections[peer].pc.ontrack = async (event) => {
-        await gotRemoteStream(event, peer);
-        // document.getElementById('localVideo').play();
-        // document.getElementById('localVideo').muted = false;
-    }
+    peerConnections[peer].pc.ontrack = event => gotRemoteStream(event, peer);
     peerConnections[peer].pc.oniceconnectionstatechange = event => checkPeerDisconnect(event, peer);
     
     if (initCall) {
-        console.log('adding tracks');
+        logClient('adding tracks');
         localStream.getTracks().forEach(async function(t) {
             await peerConnections[peer].pc.addTrack(t, localStream);
         });
-        console.log(`call inititated: ${uuid} to ${peer}`);
+        logClient(`call inititated: ${uuid} to ${peer}`);
         peerConnections[peer].pc.createOffer({iceRestart: true}).then(description => createdDescription(description, peer)).catch(errorHandler);
         // peerConnections[peer].pc.addStream(localStream);
     }
 }
   
 function gotIceCandidate(event, peer) {
-    console.log(`ice: ${uuid} to ${peer}`);
+    logClient(`ice: ${uuid} to ${peer}`);
     if (event.candidate != null) {
         sendMessage(uuid, peer, 'ICE', JSON.stringify({'ice' : event.candidate, 'roomID' : roomHash}));
     }
 }
   
 function createdDescription(description, peer) {
-    console.log(`created description for peer : ${peer}`);
+    logClient(`created description for peer : ${peer}`);
     peerConnections[peer].pc.setLocalDescription(description).then(function () {
         sendMessage(uuid, peer, 'SDP', JSON.stringify({'sdp' : peerConnections[peer].pc.localDescription, 'roomID' : roomHash}));
     }).catch(errorHandler);
@@ -332,12 +330,12 @@ setInterval(() => {
         // var sender = element.pc.getSenders()[0];
         // logFlag = false;
         element.pc.getStats().then(function (report) {
-          // console.log(report);
-          // console.log(report.values());
+          // logClient(report);
+          // logClient(report.values());
           var relevant_data = {};
           for (const i of report.values()) {
-//             console.log(i);
-            // console.log(i.type
+//             logClient(i);
+            // logClient(i.type
             if (i.type === 'inbound-rtp'){
                 relevant_data['from'] = peer_id;
                 relevant_data['to'] = uuid;
@@ -364,10 +362,10 @@ setInterval(() => {
                 continue;
             }
             relevant_data['Type'] = i.type;
-//             console.log(i);
+//             logClient(i);
             
             // var data = {'timestamp' : dt, 'data' : relevant_data};
-//             console.log(relevant_data);
+//             logClient(relevant_data);
             peerLogFileData[peer_id].push(relevant_data);
           }
         })
@@ -376,11 +374,12 @@ setInterval(() => {
   }
 }, 5000);
   
-async function gotRemoteStream(event, peer) {
-    console.log("remote stream received");
+function gotRemoteStream(event, peer) {
+    logClient("remote stream received");
     var ss_button = document.getElementById("btn-getDisplayMedia");
-    ss_button.remove();
-
+    if (ss_button) {
+        ss_button.remove();
+    }
 
     var vidElement = document.getElementById('localVideo');
     
@@ -390,17 +389,22 @@ async function gotRemoteStream(event, peer) {
 //         localStream.getVideoTracks()[0].stop();
 //     }
     localStream = event.streams[0];
-    console.log(localStream);
+    logClient(localStream);
 
     if (Object.keys(peerConnections).length > 1) {
-        console.log("updating localstream for childpeers");
+        logClient("updating localstream for childpeers");
         for (var p in peerConnections) {
             if (p == parentConnection)   continue;
             var sender = peerConnections[p].pc.getSenders().find(function(s) {
-              return s.track.kind == localStream.getVideoTracks()[0].kind;
+                return s.track.kind == localStream.getVideoTracks()[0].kind;
             });
-            console.log("sender: " + sender);
+            logClient("sender: " + sender);
             sender.replaceTrack(localStream.getVideoTracks()[0]);
+            var senderAudio = peerConnections[p].pc.getSenders().find(function(s) {
+                return s.track.kind == localStream.getAudioTracks()[0].kind;
+            });
+            logClient("senderAudio: " + senderAudio);
+            senderAudio.replaceTrack(localStream.getAudioTracks()[0]);
         }
         
     }
@@ -420,7 +424,7 @@ async function gotRemoteStream(event, peer) {
 function checkPeerDisconnect(event, peer) {
     if (peerConnections[peer]){
         var state = peerConnections[peer].pc.iceConnectionState;
-        console.log(`connection with peer ${peer} ${state}`);
+        logClient(`connection with peer ${peer} ${state}`);
         if (state === "failed" || state === "closed") {
             sendMessage(uuid, 'server', "FAIL", JSON.stringify({'roomID' : roomHash, 'node' : peer}));
             delete peerConnections[peer];
@@ -430,16 +434,23 @@ function checkPeerDisconnect(event, peer) {
     } 
 }
 
+// Logging client console
+function logClient (msg) {
+    console.log(msg);
+    var dt = new Date().getTime();
+    clientLogFileData.push({'timestamp' : dt, 'log' : msg});
+}
+
 // Call this method when user clicks on the "Leave Meeting" button.
 function sendLeavingRequest(){
-    console.log("I am leaving!");
+    logClient("I am leaving!");
     sendMessage(uuid, 'server', "LEAVE", JSON.stringify({'roomID' : roomHash}));
     delete peerConnections[uuid];
     location.replace("https://fybrrStream.herokuapp.com");
 }
 
 function errorHandler(error) {
-    console.log(error);
+    logClient(error);
 }
 
 function sendMessage (from, to, context, data) {
@@ -449,6 +460,8 @@ function sendMessage (from, to, context, data) {
 function downloadFiles() {
     let element = peerData;
     downloadData(element);
+    let logFile = clientLogFileData;
+    downloadData(logFile, "_clientLog");
 
     if (isSource){
         sendMessage(uuid, 'server', "GETNODETIMESTAMPDATA", JSON.stringify({'roomID' : roomHash}));
@@ -479,14 +492,14 @@ function downloadFiles() {
           chromeMediaSource: 'desktop',
         //   maxWidth: 1920,
         //   maxHeight: 1080,
-            width : {exact : 1920},
-            height : {exact : 1080},
+            width : {exact : 1280},
+            height : {exact : 720},
             maxFrameRate: {min : 30, ideal : 45, max : 60},
             minAspectRatio: 1.77,
             // chromeMediaSourceId: chrome.desktopCapture.chooseDesktopMedia(),
         },
-        // width: { min: 1024, ideal: 1280, max: 1920 },
-        // height: { min: 576, ideal: 720, max: 1080 }
+        width: { min: 1024, ideal: 1280, max: 1920 },
+        height: { min: 576, ideal: 720, max: 1080 }
     },
     audio: true
   }
@@ -515,7 +528,7 @@ function downloadFiles() {
                 var senderAudio = peerConnections[peer].pc.getSenders().find(function(s) {
                     return s.track.kind == localStream.getAudioTracks()[0].kind;
                 });
-                console.log("sender: " + sender);
+                logClient("sender: " + sender);
                 sender.replaceTrack(screen.getVideoTracks()[0]);
                 senderAudio.replaceTrack(screen.getAudioTracks()[0]);
             }
@@ -557,26 +570,31 @@ function downloadFiles() {
   function reReplaceVideo(){
     navigator.mediaDevices.getUserMedia(constraints)
     .then(stream => {
-      console.log("local stream");
+      logClient("local stream");
       localStream = stream;
       for (var peer in peerConnections) {
             var sender = peerConnections[peer].pc.getSenders().find(function(s) {
               return s.track.kind == localStream.getVideoTracks()[0].kind;
             });
-            console.log("sender: " + sender);
+            logClient("sender: " + sender);
             sender.replaceTrack(localStream.getVideoTracks()[0]);}
   
-      console.log("stream updated");
+      logClient("stream updated");
       localVideo.srcObject = stream;
       localVideo.play();
     }).catch(errorHandler);
   
   };
   function invokeGetDisplayMedia(success, error) {
-      var videoConstraints = {};
+      var videoConstraints = {
+        width : {ideal : 1920},
+        height : {ideal : 1080},
+        maxFrameRate: {ideal : 60},
+        minAspectRatio: 1.77
+      }
   
-          videoConstraints.width = 1920;
-          videoConstraints.height = 1080;
+        //   videoConstraints.width = 1920;
+        //   videoConstraints.height = 1080;
   
       var displayMediaStreamConstraints = {
           video: videoConstraints,
@@ -649,7 +667,7 @@ function downloadFiles() {
     document.getElementById('video').classList.toggle('off');
     document.getElementById('video').classList.toggle('on');
     localStream.getVideoTracks()[0].enabled = !(localStream.getVideoTracks()[0].enabled);
-    console.log(localStream.getVideoTracks()[0].enabled);
+    logClient(localStream.getVideoTracks()[0].enabled);
   };
 
   function toggleCamera() {
@@ -682,17 +700,17 @@ function downloadFiles() {
     }
     navigator.mediaDevices.getUserMedia(constraints)
         .then(stream => {
-          console.log("local stream");
+          logClient("local stream");
           localStream = stream;
           for (var peer in peerConnections) {
             localStream.getTracks().forEach(t => {
               peerConnections[peer].pc.addTrack(t, localStream);
             });
-            console.log("sender: " + sender);
+            logClient("sender: " + sender);
             sender.replaceTrack(videoTrack);
             sender.replaceTrack(audioTrack);
           }
-          console.log("stream updated");
+          logClient("stream updated");
           localVideo.srcObject = stream;
           localVideo.play();
         }).catch(errorHandler);
