@@ -145,7 +145,9 @@ wss.on("connection", function (ws) {
     var signal = JSON.parse(message);
 
     if (signal.to == 'server') {
-      console.log(message);
+      if (signal.context != 'GRAPH'){
+        console.log(message);
+      }
     }
     
     // message syntax : 
