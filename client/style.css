@@ -149,7 +149,7 @@ body {
 }
 @media (min-width: 1024px) {
     .buttons a:hover {
-        background: #e43538;
+        background: green;
     }
 }
 

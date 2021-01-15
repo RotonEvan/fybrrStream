@@ -96,20 +96,20 @@ function create_UUID(){
 }
 
 function init() {
-    // displayName = prompt("Enter your name: ");
-    displayName = "R";
+    displayName = prompt("Enter your name: ");
+    // displayName = "R";
 
     // set UUID
     uuid = displayName + "_" + create_UUID();
 
     // calculate and set limit
-    // limit = prompt("Enter Limit: ");
-    limit = 2;
+    limit = prompt("Enter Limit: ");
+    // limit = 2;
     slots = limit;
 
     // calculate and set score
-    // score = prompt("Enter Score: ");
-    score = 4;
+    score = prompt("Enter Score: ");
+    // score = 4;
 
     constraints = {
         video: {
@@ -435,7 +435,7 @@ function sendLeavingRequest(){
     console.log("I am leaving!");
     sendMessage(uuid, 'server', "LEAVE", JSON.stringify({'roomID' : roomHash}));
     delete peerConnections[uuid];
-    location.replace("https://fybrrStream/home.html");
+    location.replace("https://fybrrStream.herokuapp.com");
 }
 
 function errorHandler(error) {
@@ -700,6 +700,6 @@ function downloadFiles() {
   
   function leaveRoom() {
     if (confirm("Leave meeting?")) {
-      window.location = "https://fybrrstream.herokuapp.com";
+        sendLeavingRequest();
     }
   }
