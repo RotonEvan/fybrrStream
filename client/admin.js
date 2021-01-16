@@ -51,7 +51,7 @@ function updateGraph(adj_list){
 
     Object.keys(adj_list).forEach(function(peer_id) {
         adj_list[peer_id].forEach(other_peer_id => {
-            graph.addEdge(peer_id, other_peer_id, {directed : true});
+            graph.addEdge(peer_id.split('_')[0], other_peer_id.split('_')[0], {directed : true});
         });
     });
 
