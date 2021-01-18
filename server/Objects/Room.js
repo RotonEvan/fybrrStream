@@ -122,15 +122,15 @@ module.exports = class Room {
 
         items.sort(function(x, y) {
             if (x[1].getScore() > y[1].getScore()) {
-              return -1;
+              return 1;
             }
             if (x[1].getScore() < y[1].getScore()) {
-              return 1;
+              return -1;
             }
             return 0;
         });
 
-        console.log(items);
+        // console.log(items);
 
         for (let i = 0; i < items.length; i++) {
             const element = items[i];
@@ -139,18 +139,6 @@ module.exports = class Room {
                 break;
             }
         }
-        
-        // items.every(j => {
-        //     var i = j[1];
-        //     console.log(i.getSlots());
-        //     if (i.getSlots() > 0){
-        //         var node_dic = {'id' : i.getID(), 'score' : i.getScore(), 'slots' : i.getSlots()};
-        //         best_nodes.push(node_dic);
-        //         if (best_nodes.length == n){
-        //             return false;
-        //         }
-        //     }    
-        // });
 
         console.log(best_node);
 
