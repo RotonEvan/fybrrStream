@@ -45,7 +45,8 @@ module.exports = class Room {
 
     getUpdatedGraph () {
         this.graph_data = {};
-        var data = this.node_data;
+        var data = {}
+        Object.assign(data, this.node_data);
 
         // Create items array
         var items = Object.keys(this.node_data).map(function(key) {
@@ -108,38 +109,20 @@ module.exports = class Room {
         return (this.node_data[nodeID].getSlots() > 0);
     }
 
-    getBestNodes (size = this.getSize()) {
-        // var n = Math.ceil(Math.log2(size))
-        // console.log(n);
-        var best_node;
+    getBestNodes () {
+        var best_node = this.source_id;
+        var best_node_score = -1;
 
-        var data = this.node_data;
+        var node_data = {};
+        Object.assign(node_data, this.node_data);
 
-        // Create items array
-        var items = Object.keys(this.node_data).map(function(key) {
-            return [key, data[key]];
+        Object.keys(node_data).forEach(function(peer_id) {
+            var node = node_data[peer_id];
+            if (node.getScore() > best_node_score && node.getSlots() > 0 && node.getParent()){
+                best_node = peer_id;
+                best_node_score = node.getScore();
+            }
         });
-
-        items.sort(function(x, y) {
-            if (x[1].getScore() > y[1].getScore()) {
-              return 1;
-            }
-            if (x[1].getScore() < y[1].getScore()) {
-              return -1;
-            }
-            return 0;
-        });
-
-        // console.log(items);
-
-        for (let i = 0; i < items.length; i++) {
-            const element = items[i];
-            if (element[1].getSlots() > 0 && element[1].getParent()) {
-                best_node = element[1].getID();
-                break;
-            }
-        }
-
         console.log(best_node);
 
         return best_node;
@@ -149,7 +132,8 @@ module.exports = class Room {
         var max = -1;
         var maxNode = -1;
 
-        var data = this.node_data;
+        var data = {};
+        Object.assign(data, this.node_data);
 
         // Create items array
         var items = Object.keys(this.node_data).map(function(key) {
