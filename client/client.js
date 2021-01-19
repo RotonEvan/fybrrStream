@@ -110,12 +110,12 @@ function init() {
 
     // calculate and set limit
 //     limit = parseInt(hashParm[2].split('=')[1] || prompt('Enter Limit', ''));
-    limit = 2;
+    limit = 4;
     slots = limit;
 
     // calculate and set score
 //     score = parseInt(hashParm[3].split('=')[1] || prompt('Enter Score', ''));
-    score = 4;
+    score = 8;
 
     constraints = {
         video: {
