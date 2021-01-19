@@ -118,7 +118,8 @@ module.exports = class Room {
 
         Object.keys(node_data).forEach(function(peer_id) {
             var node = node_data[peer_id];
-            if (node.getScore() > best_node_score && node.getSlots() > 0 && node.getParent()){
+            console.log([peer_id, node.getScore(),best_node, best_node_score]);
+            if ((node.getScore() > best_node_score) && (node.getSlots() > 0) && (node.getParent())){
                 best_node = peer_id;
                 best_node_score = node.getScore();
             }

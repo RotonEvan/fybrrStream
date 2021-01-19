@@ -109,12 +109,12 @@ function init() {
     uuid = displayName + "_" + create_UUID();
 
     // calculate and set limit
-    limit = hashParm[2].split('=')[1] || prompt('Enter Limit', '');
+    limit = parseInt(hashParm[2].split('=')[1] || prompt('Enter Limit', ''));
     // limit = 2;
     slots = limit;
 
     // calculate and set score
-    score = hashParm[3].split('=')[1] || prompt('Enter Score', '');
+    score = parseInt(hashParm[3].split('=')[1] || prompt('Enter Score', ''));
     // score = 4;
 
     constraints = {
