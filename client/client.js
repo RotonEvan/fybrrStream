@@ -462,6 +462,7 @@ function sendMessage (from, to, context, data) {
 }
 
 function downloadFiles() {
+    logFlag = false;
     let element = peerData;
     downloadData(element);
     let logFile = clientLogFileData;
