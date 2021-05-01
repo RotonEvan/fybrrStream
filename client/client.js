@@ -50,8 +50,8 @@ var peerConnectionConfig = {
         {
 //             "url": "turn:global.turn.twilio.com:3478?transport=udp",
             "urls": "turn:global.turn.twilio.com:3478",
-            "username": "e85570880d1b9a1a0727b6aa93d0a874900584eff0c5e098d207022d0421e8dd",
-            "credential": "PiCU96rT+pGVAxTs6vF2AKmNNyk4ATRGRzhxt/ZZpI0="
+            "username": "f8c1271073a4fa7074b992560b386074725a34980b4749b847bec4c799807891",
+            "credential": "e5KibTuFnIJRLy1He/5+lxkT+UINBUOoB+lvplAcOak="
         },
 //           {
 //             "url": "turn:global.turn.twilio.com:3478?transport=tcp",
@@ -62,8 +62,8 @@ var peerConnectionConfig = {
         {
 //             "url": "turn:global.turn.twilio.com:443?transport=tcp",
             "urls": "turn:global.turn.twilio.com:443",
-            "username": "e85570880d1b9a1a0727b6aa93d0a874900584eff0c5e098d207022d0421e8dd",
-            "credential": "PiCU96rT+pGVAxTs6vF2AKmNNyk4ATRGRzhxt/ZZpI0="
+            "username": "f8c1271073a4fa7074b992560b386074725a34980b4749b847bec4c799807891",
+            "credential": "e5KibTuFnIJRLy1He/5+lxkT+UINBUOoB+lvplAcOak="
         },
         { 'urls': 'stun:stun.stunprotocol.org:3478' }
         // { 'urls': 'stun:stun.voiparound.com' },
